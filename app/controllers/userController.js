@@ -89,7 +89,7 @@ exports.listAllUsers = async (req, res) => {
         page_count: page,
         total_count: count,
       },
-      list: result,
+      data: result,
     });
   } catch (e) {
     return res.status(500).send({ error: true, message: e.message });

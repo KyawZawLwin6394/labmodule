@@ -7,25 +7,37 @@ const validator = require('validator');
 
 
 let DoctorSchema = new Schema({
+  selection: {
+    type:String,
+    enum:['Doctor','Clinic']
+  },
   name: {
     type: String,
     required: true
   },
-  speciality: {
+  phone: {
     type: String,
     required: true,
   },
-  treatmentUnitMain: {
-    type:String,
-    required:true
+  email: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    validate: {
+      isAsync: true,
+      validator: validator.isEmail,
+      message: 'Invalid Email Address.',
+    },
+    required: [true, 'User email required'],
   },
-  schedule: {
-    type: Array,
+  value: {
+    type: String,
     required:true,
   },
-  commission: {
-    type: Number,
-    required:true,
+  valueType: {
+    type: String,
+    enum:['Amount','Percent']
   },
   createdAt: {
     type: Date,
