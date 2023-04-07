@@ -30,6 +30,11 @@ let CategorySchema = new Schema({
     type:Boolean,
     required:true,
     default:false
+  },
+  flag: {
+    type:String,
+    enum:['Service','Reagent'],
+    required:true
   }
 });
 
