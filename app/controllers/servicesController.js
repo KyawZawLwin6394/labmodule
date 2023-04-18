@@ -15,7 +15,7 @@ exports.listAllServices = async (req, res) => {
       ? (regexKeyword = new RegExp(keyword, 'i'))
       : '';
     regexKeyword ? (query['name'] = regexKeyword) : '';
-    let result = await Service.find(query).limit(limit).skip(skip).populate('relatedAccounting');
+    let result = await Service.find(query).limit(limit).skip(skip).populate('relatedCategory').populate('referDoctor').populate('reagentItems.item_id');
     count = await Service.find(query).count();
     const division = count / limit;
     page = Math.ceil(division);
@@ -37,7 +37,7 @@ exports.listAllServices = async (req, res) => {
 };
 
 exports.getService = async (req, res) => {
-  const result = await Service.find({ _id: req.params.id,isDeleted:false }).populate('relatedAccounting')
+  const result = await Service.find({ _id: req.params.id,isDeleted:false }).populate('relatedCategory').populate('referDoctor').populate('reagentItems.item_id')
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
@@ -65,7 +65,7 @@ exports.updateService = async (req, res, next) => {
       { _id: req.body.id },
       req.body,
       { new: true },
-    ).populate('relatedAccounting');
+    ).populate('relatedCategory').populate('referDoctor').populate('reagentItems.item_id');
     return res.status(200).send({ success: true, data: result });
   } catch (error) {
     return res.status(500).send({ "error": true, "message": error.message })

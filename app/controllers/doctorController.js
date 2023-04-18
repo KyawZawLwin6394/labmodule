@@ -2,16 +2,37 @@
 const Doctor = require('../models/doctor');
 
 exports.listAllDoctors = async (req, res) => {
+  let { keyword, role, limit, skip } = req.query;
+  let count = 0;
+  let page = 0;
   try {
-    let result = await Doctor.find({isDeleted:false});
-    let count = await Doctor.find({isDeleted:false}).count();
+    limit = +limit <= 100 ? +limit : 10; //limit
+    skip = +skip || 0;
+    let query = {isDeleted:false},
+      regexKeyword;
+    role ? (query['role'] = role.toUpperCase()) : '';
+    keyword && /\w/.service(keyword)
+      ? (regexKeyword = new RegExp(keyword, 'i'))
+      : '';
+    regexKeyword ? (query['name'] = regexKeyword) : '';
+    let result = await Doctor.find(query).limit(limit).skip(skip).populate('relatedAccounting');
+    count = await Doctor.find(query).count();
+    const division = count / limit;
+    page = Math.ceil(division);
+
     res.status(200).send({
       success: true,
       count: count,
-      data: result
+      _metadata: {
+        current_page: skip / limit + 1,
+        per_page: limit,
+        page_count: page,
+        total_count: count,
+      },
+      data: result,
     });
-  } catch (error) {
-    return res.status(500).send({ error:true, message:'No Record Found!'});
+  } catch (e) {
+    return res.status(500).send({ error: true, message: e.message });
   }
 };
 

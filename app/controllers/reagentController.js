@@ -3,7 +3,7 @@ const Reagent = require('../models/reagent');
 
 exports.listAllReagents = async (req, res) => {
   try {
-    let result = await Reagent.find({isDeleted:false});
+    let result = await Reagent.find({isDeleted:false}).populate('supplier');
     let count = await Reagent.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,
@@ -15,8 +15,10 @@ exports.listAllReagents = async (req, res) => {
   }
 };
 
+
+
 exports.getReagent = async (req, res) => {
-  const result = await Reagent.find({ _id: req.params.id,isDeleted:false });
+  const result = await Reagent.find({ _id: req.params.id,isDeleted:false }).populate('supplier');
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
@@ -42,7 +44,7 @@ exports.updateReagent = async (req, res, next) => {
       { _id: req.body.id },
       req.body,
       { new: true },
-    );
+    ).populate('supplier');
     return res.status(200).send({ success: true, data: result });
   } catch (error) {
     return res.status(500).send({ "error": true, "message": error.message })
