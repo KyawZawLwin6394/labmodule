@@ -73,11 +73,7 @@ let PatientSchema = new Schema({
   img:{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Attachments',
-  },
-  relatedTreatmentSelection: {
-    type:[mongoose.Schema.Types.ObjectId],
-    ref:'TreatmentSelections'
-  },
+  }
 });
 const patient = mongoose.model('Patients',PatientSchema)
 module.exports = patient;
