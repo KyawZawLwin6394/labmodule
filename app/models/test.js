@@ -3,7 +3,6 @@
 const mongoose = require('mongoose');
 mongoose.promise = global.Promise;
 const Schema = mongoose.Schema;
-const validator = require('validator');
 
 
 let VoucherSchema = new Schema({
@@ -25,31 +24,14 @@ let VoucherSchema = new Schema({
         ref:'Doctors',
         required:true
     },
-    options:{
-      type:String,
-      enum:['Collect','Email']  
-    },
-    testSelection: [{
-        
+    testResultList: [{
+        name:String,
+        result:String,
+        nominalValue:String,
+        unit:Number
     }],
-    totalCharge: {
-        type:Number,
-        required:true
-    },
-    discount: {
-        type:Number,
-        required:true
-    },
-    netDiscount:{
-        type:Number,
-        required:true
-    },
-    pay: {
-        type:Number,
-        required:true
-    },
-    change:{
-        type:Number,
+    draft:{
+        type:Boolean,
         required:true
     },
     createdAt: {

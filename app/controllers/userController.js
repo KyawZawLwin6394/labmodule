@@ -101,7 +101,7 @@ exports.getUserDetail = async (req, res) => {
     let result = await User.findById(req.params.id);
     if (!result)
       return res.status(500).json({ error: true, message: 'No record found.' });
-    res.json({ success: true, data: result });
+    res.json({ success: true, data: result[0] });
   } catch (error) {
     return res.status(500).send({ error: true, message: error.message });
   }

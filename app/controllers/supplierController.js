@@ -19,7 +19,7 @@ exports.getSupplier = async (req, res) => {
   const result = await Supplier.find({ _id: req.params.id,isDeleted:false });
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
-  return res.status(200).send({ success: true, data: result });
+  return res.status(200).send({ success: true, data: result[0] });
 };
 
 exports.createSupplier = async (req, res, next) => {
