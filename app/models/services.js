@@ -15,7 +15,7 @@ let ServiceSchema = new Schema({
         type:String
     },
     leadTime:{
-        type:String
+        type:Date
     },
     relatedCategory:{
         type:mongoose.Schema.Types.ObjectId,
