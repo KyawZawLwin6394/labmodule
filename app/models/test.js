@@ -48,6 +48,6 @@ let VoucherSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Vouchers', VoucherSchema);
+module.exports = mongoose.model('Tests', VoucherSchema);
 
 //Author: Kyaw Zaw Lwin
