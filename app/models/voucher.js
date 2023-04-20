@@ -30,8 +30,14 @@ let VoucherSchema = new Schema({
       enum:['Collect','Email']  
     },
     testSelection: [{
-        
-    }],
+        name:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Services'
+        },
+        qty:Number,
+        unitCharge:Number,
+        subCharge:Number
+      }],
     totalCharge: {
         type:Number,
         required:true
