@@ -5,45 +5,45 @@ mongoose.promise = global.Promise;
 const Schema = mongoose.Schema;
 
 let ServiceSchema = new Schema({
-    code:{
-        type:String
+    code: {
+        type: String
     },
-    name:{
-        type:String
+    name: {
+        type: String
     },
-    description:{
-        type:String
+    description: {
+        type: String
     },
-    leadTime:{
-        type:Date
+    leadTime: {
+        type: Date
     },
-    relatedCategory:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Categories'
+    relatedCategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Categories'
     },
-    charges:{
-        type:Number
+    charges: {
+        type: Number
     },
-    cost:{
-        type:Number
+    cost: {
+        type: Number
     },
-    referDoctor:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Doctors'
+    referDoctor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Doctors'
     },
     reagentItems: [{
-        item_id:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Reagents'
+        item_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Reagents'
         },
-        amount:Number
-      }],
-    nominalFlag:{
-        type:String,
-        enum:['Above','Below']
+        amount: Number
+    }],
+    nominalFlag: {
+        type: String,
+        enum: ['Above', 'Below']
     },
-    nominalValue:{
-        type:String
+    nominalValue: {
+        type: String
     },
     createdAt: {
         type: Date,
@@ -56,6 +56,17 @@ let ServiceSchema = new Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    referenceRange: [{
+        from:Number,
+        to:Number,
+        gender:String
+    }],
+    specialComment:{
+        type:String
+    },
+    comment:{
+        type:String
     }
 });
 
