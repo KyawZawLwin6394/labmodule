@@ -38,13 +38,6 @@ let ServiceSchema = new Schema({
         },
         amount: Number
     }],
-    nominalFlag: {
-        type: String,
-        enum: ['Above', 'Below']
-    },
-    nominalValue: {
-        type: String
-    },
     createdAt: {
         type: Date,
         default: Date.now,
@@ -62,13 +55,7 @@ let ServiceSchema = new Schema({
         to:Number,
         gender:String,
         unit:String
-    }],
-    specialComment:{
-        type:String
-    },
-    comment:{
-        type:String
-    }
+    }]
 });
 
 module.exports = mongoose.model('Services', ServiceSchema);
