@@ -50,6 +50,12 @@ let DoctorSchema = new Schema({
     type:Boolean,
     required:true,
     default:false
+  },
+  position:{
+    type:String
+  },
+  education:{
+    type:String
   }
 });
 
