@@ -60,7 +60,8 @@ let ServiceSchema = new Schema({
     referenceRange: [{
         from:Number,
         to:Number,
-        gender:String
+        gender:String,
+        unit:String
     }],
     specialComment:{
         type:String
