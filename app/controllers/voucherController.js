@@ -38,7 +38,7 @@ exports.listAllVouchers = async (req, res) => {
 };
 
 exports.getVoucher = async (req, res) => {
-  const result = await Voucher.find({ _id: req.params.id,isDeleted:false }).populate('relatedPatient').populate('referDoctor')
+  const result = await Voucher.find({ _id: req.params.id,isDeleted:false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
@@ -101,7 +101,7 @@ exports.activateVoucher = async (req, res, next) => {
 };
 
 exports.getRelatedVouchers = async (req, res) => {
-  const result = await Patient.find({ _id: req.params.id,isDeleted:false }).populate('relatedVoucher')
+  const result = await Patient.find({ _id: req.params.patientid,isDeleted:false }).populate('relatedVoucher')
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
