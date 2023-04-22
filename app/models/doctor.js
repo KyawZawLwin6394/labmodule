@@ -8,8 +8,8 @@ const validator = require('validator');
 
 let DoctorSchema = new Schema({
   selection: {
-    type:String,
-    enum:['Doctor','Clinic']
+    type: String,
+    enum: ['Pathologist', 'Clinic', 'ReferDoctor']
   },
   name: {
     type: String,
@@ -31,14 +31,6 @@ let DoctorSchema = new Schema({
     },
     required: [true, 'User email required'],
   },
-  value: {
-    type: String,
-    required:true,
-  },
-  valueType: {
-    type: String,
-    enum:['Amount','Percent']
-  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -47,15 +39,15 @@ let DoctorSchema = new Schema({
     type: Date
   },
   isDeleted: {
-    type:Boolean,
-    required:true,
-    default:false
+    type: Boolean,
+    required: true,
+    default: false
   },
-  position:{
-    type:String
+  position: {
+    type: String
   },
-  education:{
-    type:String
+  education: {
+    type: String
   }
 });
 

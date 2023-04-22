@@ -55,7 +55,10 @@ let ServiceSchema = new Schema({
         to:Number,
         gender:String,
         unit:String
-    }]
+    }],
+    referAmount:{
+        type:Number
+    }
 });
 
 module.exports = mongoose.model('Services', ServiceSchema);

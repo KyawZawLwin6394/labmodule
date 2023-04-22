@@ -3,7 +3,6 @@
 const mongoose = require('mongoose');
 mongoose.promise = global.Promise;
 const Schema = mongoose.Schema;
-const validator = require('validator');
 
 
 let VoucherSchema = new Schema({
