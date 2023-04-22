@@ -73,6 +73,10 @@ let PatientSchema = new Schema({
   img:{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Attachments',
+  },
+  relatedVoucher:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Vouchers'
   }
 });
 const patient = mongoose.model('Patients',PatientSchema)
