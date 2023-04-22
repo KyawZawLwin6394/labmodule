@@ -74,10 +74,10 @@ let PatientSchema = new Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:'Attachments',
   },
-  relatedVoucher:{
+  relatedVoucher:[{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Vouchers'
-  }
+  }]
 });
 const patient = mongoose.model('Patients',PatientSchema)
 module.exports = patient;

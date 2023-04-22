@@ -9,6 +9,7 @@ module.exports = (app) => {
     app.route('/api/voucher')
         .post(catchError(voucher.createVoucher))
         .put( catchError(voucher.updateVoucher))
+        .get(catchError(voucher.getRelatedVouchers))
         
     app.route('/api/voucher/:id')
         .get(catchError(voucher.getVoucher))

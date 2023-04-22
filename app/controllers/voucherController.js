@@ -1,5 +1,6 @@
 'use strict';
 const Voucher = require('../models/voucher');
+const Patient = require('../models/patient')
 
 exports.listAllVouchers = async (req, res) => {
   let { keyword, role, limit, skip } = req.query;
@@ -15,7 +16,7 @@ exports.listAllVouchers = async (req, res) => {
       ? (regexKeyword = new RegExp(keyword, 'i'))
       : '';
     regexKeyword ? (query['name'] = regexKeyword) : '';
-    let result = await Voucher.find(query).limit(limit).skip(skip).populate('relatedPatient').populate('referDoctor');
+    let result = await Voucher.find(query).limit(limit).skip(skip).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
     count = await Voucher.find(query).count();
     const division = count / limit;
     page = Math.ceil(division);
@@ -97,4 +98,11 @@ exports.activateVoucher = async (req, res, next) => {
   } catch (error) {
     return res.status(500).send({ "error": true, "message": error.message })
   }
+};
+
+exports.getRelatedVouchers = async (req, res) => {
+  const result = await Patient.find({ _id: req.params.id,isDeleted:false }).populate('relatedVoucher')
+  if (!result)
+    return res.status(500).json({ error: true, message: 'No Record Found' });
+  return res.status(200).send({ success: true, data: result[0] });
 };
