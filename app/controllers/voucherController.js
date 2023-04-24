@@ -49,10 +49,16 @@ exports.createVoucher = async (req, res, next) => {
     const newBody = req.body;
     const newVoucher = new Voucher(newBody);
     const result = await newVoucher.save();
+
+    const patientResult = await Patient.updateOne(
+      { _id: req.body.patientID },
+      { $push: { relatedVoucher: result._id } }
+   )
     res.status(200).send({
       message: 'Voucher create success',
       success: true,
-      data: result
+      data: result,
+      patientData: patientResult
     });
   } catch (error) {
     console.log(error )
