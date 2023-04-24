@@ -79,6 +79,18 @@ exports.updateVoucher = async (req, res, next) => {
   }
 };
 
+exports.updateRemarkAndResult = async (req, res, next) => {
+  try {
+    const result = await Voucher.updateOne(
+      { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
+      { $set: { "testSelection.$.result": req.body.result, "testSelection.$.remark": req.body.remark } }
+   ).populate('relatedPatient').populate('referDoctor');
+    return res.status(200).send({ success: true, data: result });
+  } catch (error) {
+    return res.status(500).send({ "error": true, "message": error.message })
+  }
+};
+
 exports.deleteVoucher = async (req, res, next) => {
   try {
     const result = await Voucher.findOneAndUpdate(
