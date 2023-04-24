@@ -57,7 +57,8 @@ let ServiceSchema = new Schema({
         unit:String
     }],
     referAmount:{
-        type:Number
+        type:Number,
+        default:null
     },
     specialFlag: {
         type:Boolean,
