@@ -58,6 +58,9 @@ let ServiceSchema = new Schema({
     }],
     referAmount:{
         type:Number
+    },
+    specialComment:{
+        type:String
     }
 });
 
