@@ -39,6 +39,10 @@ let VoucherSchema = new Schema({
         result:{
             type:String,
             default:null
+        },
+        remark:{
+            type:String,
+            default:null
         }
     }],
     totalCharge: {
