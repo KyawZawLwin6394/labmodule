@@ -72,6 +72,9 @@ let VoucherSchema = new Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    comment:{
+        type:String
     }
 });
 
