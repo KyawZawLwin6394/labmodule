@@ -48,6 +48,15 @@ let DoctorSchema = new Schema({
   },
   education: {
     type: String
+  },
+  totalCommission: {
+    type: Number
+  },
+  lastWithdrawalDate: {
+    type: Date
+  },
+  lastWithdrawalAmount :{
+    type: Number
   }
 });
 
