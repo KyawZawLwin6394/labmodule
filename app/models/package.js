@@ -14,30 +14,23 @@ let PackageSchema = new Schema({
     description: {
         type: String
     },
-    leadTime: {
-        type: Date
-    },
-    relatedCategory: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Categories'
-    },
-    charges: {
-        type: Number
-    },
-    cost: {
-        type: Number
-    },
-    referDoctor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Doctors'
-    },
     package: [{
         item_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Services'
         },
-        amount:String
+        amount:Number
     }],
+    totalCharges:{
+        type:Number
+    },
+    totalCost:{
+        type:Number
+    },
+    status:{
+        type:String,
+        enum:['Active','Pending']
+    },
     createdAt: {
         type: Date,
         default: Date.now,
