@@ -67,8 +67,7 @@ let ServiceSchema = new Schema({
         type: String
     },
     subTestFlag :{
-        type:Boolean,
-        required:true
+        type:Boolean
     },
     subTest: [
         {
