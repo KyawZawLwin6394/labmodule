@@ -39,6 +39,10 @@ let VoucherSchema = new Schema({
         remark:{
             type:String,
             default:null
+        },
+        status:{
+            type:String,
+            enum:['Pending','In Progress','Finished']
         }
     }],
     totalCharge: {
