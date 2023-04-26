@@ -21,6 +21,12 @@ let ReferCommissionSchema = new Schema({
     collected:{
         type:Boolean,
         required:true
+    },
+    collectDate: {
+        type:Date
+    },
+    remark:{
+        type:String
     }
 });
 

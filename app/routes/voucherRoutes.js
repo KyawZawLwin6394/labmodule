@@ -20,6 +20,9 @@ module.exports = (app) => {
     app.route('/api/vouchers/related-vouchers/:patientid').get(catchError(voucher.getRelatedVouchers))
     app.route('/api/vouchers/document').put(catchError(voucher.updateRemarkAndResult))
 
+    app.route('/api/vouchers/today')
+        .get(catchError(voucher.getTodaysVoucher))
+
 
 
 };

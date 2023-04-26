@@ -147,3 +147,17 @@ exports.getRelatedVouchers = async (req, res) => {
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
 };
+
+exports.getTodaysVoucher = async (req, res) => {
+  try {
+    var start = new Date();
+    var end = new Date();
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    const result = await Voucher.find({ createdAt: { $gte: start, $lt: end } })
+    if (result.length === 0) return res.status(404).json({ error: true, message: 'No Record Found!' })
+    return res.status(200).send({ success: true, data: result })
+  } catch (error) {
+    return res.status(500).send({error:true, message:error.message})
+  }
+}
