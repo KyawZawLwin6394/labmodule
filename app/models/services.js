@@ -51,21 +51,32 @@ let ServiceSchema = new Schema({
         default: false
     },
     referenceRange: [{
-        from:Number,
-        to:Number,
-        gender:String,
-        unit:String
+        from: Number,
+        to: Number,
+        gender: String,
+        unit: String
     }],
-    referAmount:{
-        type:Number,
-        default:null
+    referAmount: {
+        type: Number,
+        default: null
     },
     specialFlag: {
-        type:Boolean,
+        type: Boolean,
     },
-    specialComment:{
-        type:String
-    }
+    specialComment: {
+        type: String
+    },
+    subTestFlag :{
+        type:Boolean,
+        required:true
+    },
+    subTest: [
+        {
+            name: String,
+            referenceRange: String,
+            unit: String
+        }
+    ]
 });
 
 module.exports = mongoose.model('Services', ServiceSchema);
