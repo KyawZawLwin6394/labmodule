@@ -3,6 +3,25 @@ const Voucher = require('../models/voucher');
 const Patient = require('../models/patient');
 const Commission = require('../models/commission');
 
+async function handleCommission(data) {
+  const voucherResult = await Voucher.find({ _id: data._id, isDeleted: false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+  let totalRefer = 0
+  voucherResult[0].testSelection.map(function (element, index) {
+    console.log(element)
+    if (element.name) {
+      totalRefer = totalRefer + element.name.referAmount
+    }
+  })
+  return totalRefer
+}
+
+async function checkStatus (data) {
+  const result = await Voucher.find({"_id":data.voucherID, isDeleted:false}).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+  result.testSelection.map(function(element,index) {
+    
+  })
+}
+
 exports.listAllVouchers = async (req, res) => {
   let { keyword, role, limit, skip } = req.query;
   let count = 0;
@@ -44,18 +63,6 @@ exports.getVoucher = async (req, res) => {
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
 };
-
-async function handleCommission(data) {
-  const voucherResult = await Voucher.find({ _id: data._id, isDeleted: false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
-  let totalRefer = 0
-  voucherResult[0].testSelection.map(function (element, index) {
-    console.log(element)
-    if (element.name) {
-      totalRefer = totalRefer + element.name.referAmount
-    }
-  })
-  return totalRefer
-}
 
 exports.createVoucher = async (req, res, next) => {
   try {
@@ -104,9 +111,24 @@ exports.updateVoucher = async (req, res, next) => {
 
 exports.updateRemarkAndResult = async (req, res, next) => {
   try {
+
+    // check status
+    const statusResult = await Voucher.find({"_id":req.body.voucherID})
     const result = await Voucher.updateOne(
       { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
       { $set: { "testSelection.$.result": req.body.result, "testSelection.$.remark": req.body.remark } }
+    ).populate('relatedPatient').populate('referDoctor');
+    return res.status(200).send({ success: true, data: result });
+  } catch (error) {
+    return res.status(500).send({ "error": true, "message": error.message })
+  }
+};
+
+exports.updateTestSelectionStatus = async (req, res, next) => {
+  try {
+    const result = await Voucher.updateOne(
+      { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
+      { $set: { "testSelection.$.status": req.body.status } }
     ).populate('relatedPatient').populate('referDoctor');
     return res.status(200).send({ success: true, data: result });
   } catch (error) {

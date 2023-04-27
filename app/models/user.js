@@ -50,7 +50,7 @@ let UserSchema = new Schema({
   },
   role:{
     type: String,
-    enum: ['Doctor', 'User', 'Admin']
+    enum: ['Laboratory', 'Sales', 'Admin','Finance']
   }
   
 });
