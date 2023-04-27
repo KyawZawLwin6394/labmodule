@@ -13,6 +13,10 @@ let ReferCommissionSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:'Doctors'
     },
+    relatedVoucher: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Vouchers'
+    },
     date: {
         type: String,
         required:true
