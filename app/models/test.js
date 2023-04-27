@@ -7,12 +7,10 @@ const Schema = mongoose.Schema;
 
 let VoucherSchema = new Schema({
     code: {
-        type: String,
-        required: true,
+        type: String
     },
     date: {
-        type: Date,
-        required: true
+        type: Date
     },
     relatedPatient : {
         type:mongoose.Schema.Types.ObjectId,

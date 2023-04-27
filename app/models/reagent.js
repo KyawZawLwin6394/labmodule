@@ -8,12 +8,10 @@ const validator = require('validator');
 
 let ReagentSchema = new Schema({
     name: {
-        type: String,
-        required: true
+        type: String
     },
     code: {
-        type: String,
-        required: true,
+        type: String
     },
     stockUnit: [{
         unitName: String,
@@ -22,8 +20,7 @@ let ReagentSchema = new Schema({
     }],
     supplier: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Suppliers',
-        required: true,
+        ref: 'Suppliers'
     },
     createdAt: {
         type: Date,

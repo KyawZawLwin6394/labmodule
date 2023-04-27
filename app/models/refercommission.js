@@ -11,8 +11,7 @@ let ReferCommissionSchema = new Schema({
     },
     relatedDoctor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:'Doctors',
-        required: true,
+        ref:'Doctors'
     },
     date: {
         type: String,
@@ -27,6 +26,11 @@ let ReferCommissionSchema = new Schema({
     },
     remark:{
         type:String
+    },
+    isDeleted:{
+        type:Boolean,
+        required: true,
+        default: false
     }
 });
 

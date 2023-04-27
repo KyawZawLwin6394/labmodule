@@ -13,11 +13,9 @@ let DoctorSchema = new Schema({
   },
   name: {
     type: String,
-    required: true
   },
   phone: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
@@ -55,7 +53,7 @@ let DoctorSchema = new Schema({
   lastWithdrawalDate: {
     type: Date
   },
-  lastWithdrawalAmount :{
+  lastWithdrawalAmount: {
     type: Number
   }
 });

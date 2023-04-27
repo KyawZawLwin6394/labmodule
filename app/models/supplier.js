@@ -8,8 +8,7 @@ const validator = require('validator');
 
 let SupplierSchema = new Schema({
   name: {
-    type: String,
-    required: true
+    type: String
   },
   phone:{
     type: String,

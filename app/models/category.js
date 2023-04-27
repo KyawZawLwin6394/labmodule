@@ -8,11 +8,10 @@ const Schema = mongoose.Schema;
 let CategorySchema = new Schema({
   code: {
     type: String,
-    required: true
+    
   },
   name: {
     type: String,
-    required: true,
   },
   description: {
     type:String,

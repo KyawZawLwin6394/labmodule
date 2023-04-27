@@ -8,8 +8,7 @@ const CONFIG = require('../../config/db');
 
 let UserSchema = new Schema({
   givenName: {
-    type: String,
-    required: true,
+    type: String
   },
   email: {
     type: String,
@@ -27,8 +26,7 @@ let UserSchema = new Schema({
     type:String,
   },
   password: {
-    type: String,
-    required: true,
+    type: String
   },
   phone:{
     type: String,

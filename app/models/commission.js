@@ -12,7 +12,6 @@ let CommissionSchema = new Schema({
     relatedDoctor: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'Doctors',
-        required: true,
     },
     relatedVoucher: {
         type: mongoose.Schema.Types.ObjectId,
@@ -27,6 +26,11 @@ let CommissionSchema = new Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Patients',
         required:true
+    },
+    isDeleted:{
+        type:Boolean,
+        required:true,
+        default:false
     }
 });
 

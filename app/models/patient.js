@@ -8,8 +8,7 @@ const validator = require('validator');
 
 let PatientSchema = new Schema({
   name: {
-    type: String,
-    required: true
+    type: String
   },
   age: {
     type: Number,
