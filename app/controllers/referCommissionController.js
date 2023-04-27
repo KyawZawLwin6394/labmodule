@@ -1,5 +1,5 @@
 'use strict';
-const ReferCommission = require('../models/referCommission');
+const ReferCommission = require('../models/refercommission');
 
 exports.listAllReferCommissions = async (req, res) => {
   let { keyword, role, limit, skip } = req.query;
