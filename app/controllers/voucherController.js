@@ -7,7 +7,6 @@ async function handleCommission(data) {
   const voucherResult = await Voucher.find({ _id: data._id, isDeleted: false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
   let totalRefer = 0
   voucherResult[0].testSelection.map(function (element, index) {
-    console.log(element)
     if (element.name) {
       totalRefer = totalRefer + element.name.referAmount
     }
@@ -15,11 +14,36 @@ async function handleCommission(data) {
   return totalRefer
 }
 
-async function checkStatus (data) {
-  const result = await Voucher.find({"_id":data.voucherID, isDeleted:false}).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
-  result.testSelection.map(function(element,index) {
-    
-  })
+// async function checkStatus(data) {
+//   const statusResult = await Voucher.find({ "_id": data.voucherID, isDeleted: false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+//   if (statusResult.length === 0) return res.status(500).send({ error: true, message: 'No Record Found!' })
+//   let testSelectionCount, newTestSelection;
+//   testSelectionCount = newTestSelection = statusResult[0].testSelection.length
+//   statusResult[0].testSelection.map(function (element) {
+//     if (!element.result || element.result === null) newTestSelection = newTestSelection - 1
+//   })
+//   if (testSelectionCount === newTestSelection) return 'Finished'
+//   if (newTestSelection === 0) return 'Pending'
+//   if (newTestSelection < testSelectionCount) return 'In Progress'
+// }
+
+async function checkStatus(data) {
+  const [statusResult] = await Voucher.find({ "_id": data.voucherID, isDeleted: false })
+    .populate('relatedPatient')
+    .populate('referDoctor')
+    .populate('testSelection.name');
+
+  if (statusResult.length === 0) return res.status(500).send({ error: true, message: 'No Record Found!' });
+
+  const completedCount = statusResult.testSelection.filter(element => element.result).length;
+  const totalCount = statusResult.testSelection.length;
+  const status = completedCount === totalCount
+    ? 'Finished'
+    : completedCount === 0
+      ? 'Pending'
+      : 'In Progress';
+
+  return status;
 }
 
 exports.listAllVouchers = async (req, res) => {
@@ -72,10 +96,10 @@ exports.createVoucher = async (req, res, next) => {
     // handling commission
     const commissionResult = await handleCommission(result)
     const newCommission = new Commission({
-      "relatedDoctor":req.body.referDoctor,
-      "relatedVoucher":result._id,
-      "totalCommission":commissionResult,
-      "relatedPatient":req.body.relatedPatient
+      "relatedDoctor": req.body.referDoctor,
+      "relatedVoucher": result._id,
+      "totalCommission": commissionResult,
+      "relatedPatient": req.body.relatedPatient
     })
     const commissionSave = await newCommission.save()
     // end of handleCommission
@@ -88,10 +112,9 @@ exports.createVoucher = async (req, res, next) => {
       success: true,
       data: result,
       patientData: patientResult,
-      commission:commissionSave
+      commission: commissionSave
     });
   } catch (error) {
-    console.log(error)
     return res.status(500).send({ "error": true, message: error.message })
   }
 };
@@ -111,26 +134,19 @@ exports.updateVoucher = async (req, res, next) => {
 
 exports.updateRemarkAndResult = async (req, res, next) => {
   try {
-
-    // check status
-    const statusResult = await Voucher.find({"_id":req.body.voucherID})
     const result = await Voucher.updateOne(
       { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
       { $set: { "testSelection.$.result": req.body.result, "testSelection.$.remark": req.body.remark } }
-    ).populate('relatedPatient').populate('referDoctor');
-    return res.status(200).send({ success: true, data: result });
-  } catch (error) {
-    return res.status(500).send({ "error": true, "message": error.message })
-  }
-};
+    ).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+    
+    const statusResult = await checkStatus(req.body)
 
-exports.updateTestSelectionStatus = async (req, res, next) => {
-  try {
-    const result = await Voucher.updateOne(
-      { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
-      { $set: { "testSelection.$.status": req.body.status } }
-    ).populate('relatedPatient').populate('referDoctor');
-    return res.status(200).send({ success: true, data: result });
+    const statusUpdate = await Voucher.findOneAndUpdate(
+      { _id: req.body.voucherID },
+      { $set: { status: statusResult } },
+      { new: true },
+    ).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+    return res.status(200).send({ success: true, data: statusUpdate });
   } catch (error) {
     return res.status(500).send({ "error": true, "message": error.message })
   }
@@ -180,6 +196,6 @@ exports.getTodaysVoucher = async (req, res) => {
     if (result.length === 0) return res.status(404).json({ error: true, message: 'No Record Found!' })
     return res.status(200).send({ success: true, data: result })
   } catch (error) {
-    return res.status(500).send({error:true, message:error.message})
+    return res.status(500).send({ error: true, message: error.message })
   }
 }
