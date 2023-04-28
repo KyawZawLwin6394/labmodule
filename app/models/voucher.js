@@ -11,6 +11,7 @@ let VoucherSchema = new Schema({
     },
     date: {
         type: Date,
+        default:Date.now()
     },
     relatedPatient: {
         type: mongoose.Schema.Types.ObjectId,
