@@ -4,28 +4,24 @@ const Patient = require('../models/patient');
 const Commission = require('../models/commission');
 
 async function handleCommission(data) {
-  const voucherResult = await Voucher.find({ _id: data._id, isDeleted: false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
-  let totalRefer = 0
-  voucherResult[0].testSelection.map(function (element, index) {
-    if (element.name) {
-      totalRefer = totalRefer + element.name.referAmount
-    }
-  })
-  return totalRefer
+  const voucherResult = await Voucher.findOne({ _id: data._id, isDeleted: false }).populate([
+    { path: 'relatedPatient' },
+    { path: 'referDoctor' },
+    { path: 'testSelection.name' },
+  ]);
+  const totalRefer = calculateTotalRefer(voucherResult.testSelection);
+  return totalRefer;
 }
 
-// async function checkStatus(data) {
-//   const statusResult = await Voucher.find({ "_id": data.voucherID, isDeleted: false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
-//   if (statusResult.length === 0) return res.status(500).send({ error: true, message: 'No Record Found!' })
-//   let testSelectionCount, newTestSelection;
-//   testSelectionCount = newTestSelection = statusResult[0].testSelection.length
-//   statusResult[0].testSelection.map(function (element) {
-//     if (!element.result || element.result === null) newTestSelection = newTestSelection - 1
-//   })
-//   if (testSelectionCount === newTestSelection) return 'Finished'
-//   if (newTestSelection === 0) return 'Pending'
-//   if (newTestSelection < testSelectionCount) return 'In Progress'
-// }
+function calculateTotalRefer(testSelection) {
+  let totalRefer = 0;
+  testSelection.forEach((element) => {
+    if (element.name && element.name.referAmount) {
+      totalRefer += element.name.referAmount;
+    }
+  });
+  return totalRefer;
+}
 
 async function checkStatus(data) {
   const [statusResult] = await Voucher.find({ "_id": data.voucherID, isDeleted: false })
@@ -47,39 +43,38 @@ async function checkStatus(data) {
 }
 
 exports.listAllVouchers = async (req, res) => {
-  let { keyword, role, limit, skip } = req.query;
-  let count = 0;
-  let page = 0;
+  const { keyword, role, limit = 10, skip = 0 } = req.query;
   try {
-    limit = +limit <= 100 ? +limit : 10; //limit
-    skip = +skip || 0;
-    let query = { isDeleted: false },
-      regexKeyword;
-    role ? (query['role'] = role.toUpperCase()) : '';
-    keyword && /\w/.test(keyword)
-      ? (regexKeyword = new RegExp(keyword, 'i'))
-      : '';
-    regexKeyword ? (query['name'] = regexKeyword) : '';
-    let result = await Voucher.find(query).limit(limit).skip(skip).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
-    count = await Voucher.find(query).count();
-    const division = count / limit;
-    page = Math.ceil(division);
+    const isRoleProvided = !!role;
+    const isKeywordProvided = keyword && /\w/.test(keyword);
+    const query = {
+      isDeleted: false,
+      ...(isRoleProvided && { role: role.toUpperCase() }),
+      ...(isKeywordProvided && { name: new RegExp(keyword, 'i') }),
+    };
 
+    const [vouchers, count] = await Promise.all([
+      Voucher.find(query).limit(+limit).skip(+skip)
+        .populate('relatedPatient referDoctor testSelection.name'),
+      Voucher.countDocuments(query)
+    ]);
+    const pageCount = Math.ceil(count / +limit);
     res.status(200).send({
       success: true,
-      count: count,
+      count,
       _metadata: {
-        current_page: skip / limit + 1,
-        per_page: limit,
-        page_count: page,
+        current_page: +skip / +limit + 1,
+        per_page: +limit,
+        page_count: pageCount,
         total_count: count,
       },
-      data: result,
+      data: vouchers
     });
-  } catch (e) {
-    return res.status(500).send({ error: true, message: e.message });
+  } catch (error) {
+    res.status(500).send({ error: true, message: error.message });
   }
 };
+
 
 exports.getVoucher = async (req, res) => {
   const result = await Voucher.find({ _id: req.params.id, isDeleted: false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
@@ -138,7 +133,7 @@ exports.updateRemarkAndResult = async (req, res, next) => {
       { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
       { $set: { "testSelection.$.result": req.body.result, "testSelection.$.remark": req.body.remark } }
     ).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
-    
+
     const statusResult = await checkStatus(req.body)
 
     const statusUpdate = await Voucher.findOneAndUpdate(
