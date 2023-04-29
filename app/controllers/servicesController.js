@@ -2,37 +2,16 @@
 const Service = require('../models/services');
 
 exports.listAllServices = async (req, res) => {
-  let { keyword, role, limit, skip } = req.query;
-  let count = 0;
-  let page = 0;
   try {
-    limit = +limit <= 100 ? +limit : 10; //limit
-    skip = +skip || 0;
-    let query = {isDeleted:false},
-      regexKeyword;
-    role ? (query['role'] = role.toUpperCase()) : '';
-    keyword && /\w/.service(keyword)
-      ? (regexKeyword = new RegExp(keyword, 'i'))
-      : '';
-    regexKeyword ? (query['name'] = regexKeyword) : '';
-    let result = await Service.find(query).limit(limit).skip(skip).populate('relatedCategory').populate('referDoctor').populate('reagentItems.item_id');
-    count = await Service.find(query).count();
-    const division = count / limit;
-    page = Math.ceil(division);
-
+    let result = await Service.find({isDeleted:false}).populate('relatedCategory').populate('referDoctor').populate('reagentItems.item_id')
+    let count = await Service.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,
       count: count,
-      _metadata: {
-        current_page: skip / limit + 1,
-        per_page: limit,
-        page_count: page,
-        total_count: count,
-      },
-      data: result,
+      data: result
     });
-  } catch (e) {
-    return res.status(500).send({ error: true, message: e.message });
+  } catch (error) {
+    return res.status(500).send({ error:true, message:'No Record Found!'});
   }
 };
 

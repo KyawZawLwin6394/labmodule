@@ -42,36 +42,18 @@ async function checkStatus(data) {
   return status;
 }
 
-exports.listAllVouchers = async (req, res) => {
-  const { keyword, role, limit = 10, skip = 0 } = req.query;
-  try {
-    const isRoleProvided = !!role;
-    const isKeywordProvided = keyword && /\w/.test(keyword);
-    const query = {
-      isDeleted: false,
-      ...(isRoleProvided && { role: role.toUpperCase() }),
-      ...(isKeywordProvided && { name: new RegExp(keyword, 'i') }),
-    };
 
-    const [vouchers, count] = await Promise.all([
-      Voucher.find(query).limit(+limit).skip(+skip)
-        .populate('relatedPatient referDoctor testSelection.name'),
-      Voucher.countDocuments(query)
-    ]);
-    const pageCount = Math.ceil(count / +limit);
+exports.listAllVouchers = async (req, res) => {
+  try {
+    let result = await Voucher.find({isDeleted:false}).populate('img');
+    let count = await Voucher.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,
-      count,
-      _metadata: {
-        current_page: +skip / +limit + 1,
-        per_page: +limit,
-        page_count: pageCount,
-        total_count: count,
-      },
-      data: vouchers
+      count: count,
+      data: result
     });
   } catch (error) {
-    res.status(500).send({ error: true, message: error.message });
+    return res.status(500).send({ error:true, message:'No Record Found!'});
   }
 };
 

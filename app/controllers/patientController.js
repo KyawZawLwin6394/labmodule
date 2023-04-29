@@ -16,38 +16,16 @@ function formatDateAndTime(dateString) { // format mongodb ISO 8601 date format 
 }
 
 exports.listAllPatients = async (req, res) => {
-  let { keyword, role, limit, skip } = req.query;
-  let count = 0;
-  let page = 0;
   try {
-    limit = +limit <= 100 ? +limit : 10; //limit
-    skip = +skip || 0;
-    let query = {isDeleted:false},
-      regexKeyword;
-    role ? (query['role'] = role.toUpperCase()) : '';
-    keyword && /\w/.test(keyword)
-      ? (regexKeyword = new RegExp(keyword, 'i'))
-      : '';
-    regexKeyword ? (query['name'] = regexKeyword) : '';
-    console.log(limit)
-    let result = await Patient.find(query).limit(limit).skip(skip).populate('img');
-    count = await Patient.find(query).count();
-    const division = count / limit;
-    page = Math.ceil(division);
-
+    let result = await Patient.find({isDeleted:false}).populate('img');
+    let count = await Patient.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,
       count: count,
-      _metadata: {
-        current_page: skip / limit + 1,
-        per_page: limit,
-        page_count: page,
-        total_count: count,
-      },
-      list: result,
+      data: result
     });
-  } catch (e) {
-    return res.status(500).send({ error: true, message: e.message });
+  } catch (error) {
+    return res.status(500).send({ error:true, message:'No Record Found!'});
   }
 };
 
@@ -84,6 +62,8 @@ exports.createPatient = async (req, res, next) => {
       const attachResult = await newAttachment.save();
       data = { ...data, img: attachResult._id.toString()};
     } //prepare img and save it into attachment schema
+
+    if (files.img === undefined) return res.status(500).send({error:true, message:"Please attach an image to create patient!"})
 
     const newPatient = new Patient(data);
     const result = await newPatient.save(); 

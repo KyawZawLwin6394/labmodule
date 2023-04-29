@@ -2,37 +2,16 @@
 const ReferCommission = require('../models/refercommission');
 
 exports.listAllReferCommissions = async (req, res) => {
-  let { keyword, role, limit, skip } = req.query;
-  let count = 0;
-  let page = 0;
   try {
-    limit = +limit <= 100 ? +limit : 10; //limit
-    skip = +skip || 0;
-    let query = {isDeleted:false},
-      regexKeyword;
-    role ? (query['role'] = role.toUpperCase()) : '';
-    keyword && /\w/.test(keyword)
-      ? (regexKeyword = new RegExp(keyword, 'i'))
-      : '';
-    regexKeyword ? (query['name'] = regexKeyword) : '';
-    let result = await ReferCommission.find(query).limit(limit).skip(skip).populate('relatedCategory').populate('referDoctor').populate('referCommission.item_id');
-    count = await ReferCommission.find(query).limit(limit).skip(skip).count();
-    const division = count / limit;
-    page = Math.ceil(division);
-
+    let result = await ReferCommission.find({isDeleted:false}).populate('relatedCategory').populate('referDoctor').populate('referCommission.item_id');
+    let count = await ReferCommission.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,
       count: count,
-      _metadata: {
-        current_page: skip / limit + 1,
-        per_page: limit,
-        page_count: page,
-        total_count: count,
-      },
-      list: result,
+      data: result
     });
-  } catch (e) {
-    return res.status(500).send({ error: true, message: e.message });
+  } catch (error) {
+    return res.status(500).send({ error:true, message:'No Record Found!'});
   }
 };
 
