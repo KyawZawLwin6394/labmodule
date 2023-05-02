@@ -15,4 +15,6 @@ module.exports = (app) => {
         .post(catchError(ReferCommission.activateReferCommission))
 
     app.route('/api/refer-commissions').get(catchError(ReferCommission.listAllReferCommissions))
+
+    app.route('/api/refer-commissions/doctor/:id').get(catchError(ReferCommission.getReferCommissionByDoctorID))
 };

@@ -22,6 +22,13 @@ exports.getReferCommission = async (req, res) => {
   return res.status(200).send({ success: true, data: result });
 };
 
+exports.getReferCommissionByDoctorID = async (req, res) => {
+  const result = await ReferCommission.find({ relatedDoctor: req.params.id,isDeleted:false }).populate('relatedCategory').populate('referDoctor').populate('referCommission.item_id');
+  if (result.length === 0)
+    return res.status(500).json({ error: true, message: 'No Record Found' });
+  return res.status(200).send({ success: true, data: result });
+};
+
 exports.createReferCommission = async (req, res, next) => {
   try {
     const newBody = req.body;

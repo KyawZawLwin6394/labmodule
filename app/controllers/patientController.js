@@ -48,7 +48,7 @@ exports.createPatient = async (req, res, next) => {
     console.log(data)
     if (latestDocument.length) {
       const increment = latestDocument[0].seq+1
-      data = {...data, patientID:"CUS-"+increment, seq:increment}
+      data = {...data, patientID:"PT-"+increment, seq:increment}
     }
     console.log(files.img,'files.img')
     if (files.img) {
@@ -62,8 +62,6 @@ exports.createPatient = async (req, res, next) => {
       const attachResult = await newAttachment.save();
       data = { ...data, img: attachResult._id.toString()};
     } //prepare img and save it into attachment schema
-
-    if (files.img === undefined) return res.status(500).send({error:true, message:"Please attach an image to create patient!"})
 
     const newPatient = new Patient(data);
     const result = await newPatient.save(); 
