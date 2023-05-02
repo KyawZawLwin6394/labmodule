@@ -76,7 +76,6 @@ exports.createVoucher = async (req, res, next) => {
       const increment = latestDocument[0].seq+1
       data = {...data, voucherID:"VOU-"+pResult[0].patientID+"-"+today.split('T')[0].replace(/-/g, '')+"-"+increment, seq:increment}
     }
-    console.log(data,'here')
     const newBody = data;
     const newVoucher = new Voucher(newBody);
     const result = await newVoucher.save();
