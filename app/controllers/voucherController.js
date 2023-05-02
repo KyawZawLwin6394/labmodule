@@ -66,8 +66,19 @@ exports.getVoucher = async (req, res) => {
 };
 
 exports.createVoucher = async (req, res, next) => {
+  let data = req.body;
   try {
-    const newBody = req.body;
+    let today = new Date().toISOString()
+    const pResult = await Patient.find({_id:req.body.relatedPatient})
+    const latestDocument =await Voucher.find({},{seq:1}).sort({_id: -1}).limit(1).exec();
+    if (latestDocument[0].seq === undefined) data= {...data, seq:1, voucherID:"VOU-"+pResult[0].patientID+"-"+today.split('T')[0].replace(/-/g, '')+"-1"} // if seq is undefined set initial patientID and seq
+    if (latestDocument[0].seq) {
+      console.log('it exists')
+      const increment = latestDocument[0].seq+1
+      data = {...data, voucherID:"VOU-"+pResult[0].patientID+"-"+today.split('T')[0].replace(/-/g, '')+"-"+increment, seq:increment}
+    }
+    console.log(data,'here')
+    const newBody = data;
     const newVoucher = new Voucher(newBody);
     const result = await newVoucher.save();
     // handling commission
