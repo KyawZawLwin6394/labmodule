@@ -14,7 +14,7 @@ let ReferCommissionSchema = new Schema({
         ref:'Doctors'
     },
     relatedVoucher: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: [mongoose.Schema.Types.ObjectId],
         ref:'Vouchers'
     },
     date: {

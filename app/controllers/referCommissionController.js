@@ -3,7 +3,7 @@ const ReferCommission = require('../models/refercommission');
 
 exports.listAllReferCommissions = async (req, res) => {
   try {
-    let result = await ReferCommission.find({isDeleted:false}).populate('relatedCategory').populate('referDoctor').populate('referCommission.item_id');
+    let result = await ReferCommission.find({isDeleted:false}).populate('relatedDoctor').populate('relatedVoucher')
     let count = await ReferCommission.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,
@@ -16,14 +16,14 @@ exports.listAllReferCommissions = async (req, res) => {
 };
 
 exports.getReferCommission = async (req, res) => {
-  const result = await ReferCommission.find({ _id: req.params.id,isDeleted:false }).populate('relatedCategory').populate('referDoctor').populate('referCommission.item_id');
+  const result = await ReferCommission.find({ _id: req.params.id,isDeleted:false }).populate('relatedDoctor').populate('relatedVoucher')
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result });
 };
 
-exports.getReferCommissionByDoctorID = async (req, res) => {
-  const result = await ReferCommission.find({ relatedDoctor: req.params.id,isDeleted:false }).populate('relatedCategory').populate('referDoctor').populate('referCommission.item_id');
+exports.getReferCommissionByDoctorID = async (req, res) => {  
+  const result = await ReferCommission.find({ relatedDoctor: req.query.id,isDeleted:false,date:req.query.date }).populate('relatedDoctor').populate('relatedVoucher')
   if (result.length === 0)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result });
@@ -51,7 +51,7 @@ exports.updateReferCommission = async (req, res, next) => {
       { _id: req.body.id },
       req.body,
       { new: true },
-    ).populate('relatedCategory').populate('referDoctor').populate('referCommission.item_id');
+    ).populate('relatedDoctor').populate('relatedVoucher')
     return res.status(200).send({ success: true, data: result });
   } catch (error) {
     return res.status(500).send({ "error": true, "message": error.message })
