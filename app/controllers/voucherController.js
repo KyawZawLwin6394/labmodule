@@ -182,3 +182,48 @@ exports.getTodaysVoucher = async (req, res) => {
     return res.status(500).send({ error: true, message: error.message })
   }
 }
+
+exports.getVouchersWithDoctorIDandTime = async (req, res) => {
+  const { referDoctor, fromDate, toDate } = req.body;
+
+  const result = await Voucher.aggregate([
+    {
+      $match: {
+        referDoctor: referDoctor,
+        isDeleted: false,
+        createdAt: {
+          $gte: new Date(fromDate),
+          $lte: new Date(toDate)
+        }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$totalCharge" },
+        vouchers: { $push: "$$ROOT" },
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        totalAmount: 1,
+        count: 1,
+        data: "$vouchers"
+      }
+    }
+  ]);
+
+  if (result.length === 0) {
+    return res.status(500).json({ success: false, message: 'No Record Found' });
+  }
+
+  const { totalAmount, count, data } = result[0];
+  return res.status(200).json({
+    success: true,
+    count: count,
+    data: data,
+    totalAmount: totalAmount
+  });
+};
