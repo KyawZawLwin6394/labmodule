@@ -45,15 +45,15 @@ async function checkStatus(data) {
 
 exports.listAllVouchers = async (req, res) => {
   try {
-    let result = await Voucher.find({isDeleted:false}).populate('img');
-    let count = await Voucher.find({isDeleted:false}).count();
+    let result = await Voucher.find({ isDeleted: false }).populate('img');
+    let count = await Voucher.find({ isDeleted: false }).count();
     res.status(200).send({
       success: true,
       count: count,
       data: result
     });
   } catch (error) {
-    return res.status(500).send({ error:true, message:'No Record Found!'});
+    return res.status(500).send({ error: true, message: 'No Record Found!' });
   }
 };
 
@@ -69,12 +69,12 @@ exports.createVoucher = async (req, res, next) => {
   let data = req.body;
   try {
     let today = new Date().toISOString()
-    const pResult = await Patient.find({_id:req.body.relatedPatient})
-    const latestDocument =await Voucher.find({},{seq:1}).sort({_id: -1}).limit(1).exec();c
-    if (latestDocument[0].seq === undefined) data= {...data, seq:1, voucherID:"VOU-"+pResult[0].patientID+"-"+today.split('T')[0].replace(/-/g, '')+"-1"} // if seq is undefined set initial patientID and seq
+    const pResult = await Patient.find({ _id: req.body.relatedPatient })
+    const latestDocument = await Voucher.find({}, { seq: 1 }).sort({ _id: -1 }).limit(1).exec(); c
+    if (latestDocument[0].seq === undefined) data = { ...data, seq: 1, voucherID: "VOU-" + pResult[0].patientID + "-" + today.split('T')[0].replace(/-/g, '') + "-1" } // if seq is undefined set initial patientID and seq
     if (latestDocument[0].seq) {
-      const increment = latestDocument[0].seq+1
-      data = {...data, voucherID:"VOU-"+pResult[0].patientID+"-"+today.split('T')[0].replace(/-/g, '')+"-"+increment, seq:increment}
+      const increment = latestDocument[0].seq + 1
+      data = { ...data, voucherID: "VOU-" + pResult[0].patientID + "-" + today.split('T')[0].replace(/-/g, '') + "-" + increment, seq: increment }
     }
     const newBody = data;
     const newVoucher = new Voucher(newBody);
@@ -214,7 +214,6 @@ exports.getVouchersWithDoctorIDandTime = async (req, res) => {
       }
     }
   ]);
-
   if (result.length === 0) {
     return res.status(500).json({ success: false, message: 'No Record Found' });
   }

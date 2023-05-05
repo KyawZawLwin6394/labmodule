@@ -12,7 +12,7 @@ exports.createIndexes = () => {
     const db = client.db(config.dbName);
 
     // Create indexes
-    db.collection('patients').createIndex({ name: 'text', phone: 'text', email: 'text', patientID: 'text' }, function (err, result) {
+    db.collection('patients').createIndexes({ name: 'text', phone: 'text', email: 'text', patientID: 'text' }, function (err, result) {
       if (err) {
         console.log(err);
       } else {
