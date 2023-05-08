@@ -45,7 +45,11 @@ async function checkStatus(data) {
 
 exports.listAllVouchers = async (req, res) => {
   try {
-    let result = await Voucher.find({ isDeleted: false }).populate('img');
+    let result = await Voucher.find({ isDeleted: false }).populate([
+      { path: 'relatedPatient' },
+      { path: 'referDoctor' },
+      { path: 'testSelection.name' },
+    ])
     let count = await Voucher.find({ isDeleted: false }).count();
     res.status(200).send({
       success: true,
@@ -59,7 +63,11 @@ exports.listAllVouchers = async (req, res) => {
 
 
 exports.getVoucher = async (req, res) => {
-  const result = await Voucher.find({ _id: req.params.id, isDeleted: false }).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+  const result = await Voucher.find({ _id: req.params.id, isDeleted: false }).populate([
+    { path: 'relatedPatient' },
+    { path: 'referDoctor' },
+    { path: 'testSelection.name' },
+  ])
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
@@ -111,7 +119,11 @@ exports.updateVoucher = async (req, res, next) => {
       { _id: req.body.id },
       req.body,
       { new: true },
-    ).populate('relatedPatient').populate('referDoctor');
+    ).populate([
+      { path: 'relatedPatient' },
+      { path: 'referDoctor' },
+      { path: 'testSelection.name' },
+    ])
     return res.status(200).send({ success: true, data: result });
   } catch (error) {
     return res.status(500).send({ "error": true, "message": error.message })
@@ -166,7 +178,11 @@ exports.activateVoucher = async (req, res, next) => {
 };
 
 exports.getRelatedVouchers = async (req, res) => {
-  const result = await Patient.find({ _id: req.params.patientid, isDeleted: false }).populate('relatedVoucher').populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+  const result = await Patient.find({ _id: req.params.patientid, isDeleted: false }).populate([
+    { path: 'relatedPatient' },
+    { path: 'referDoctor' },
+    { path: 'testSelection.name' },
+  ])
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
@@ -174,8 +190,11 @@ exports.getRelatedVouchers = async (req, res) => {
 
 exports.getTodaysVoucher = async (req, res) => {
   try {
-    const result = await Voucher.find({ createdAt: { $gte: new Date(new Date().setHours("0", 0, 0)), $lt: new Date(new Date().setHours("23", 59, 59)) } })
-      .populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+    const result = await Voucher.find({ createdAt: { $gte: new Date(new Date().setHours("0", 0, 0)), $lt: new Date(new Date().setHours("23", 59, 59)) } }).populate([
+      { path: 'relatedPatient' },
+      { path: 'referDoctor' },
+      { path: 'testSelection.name' },
+    ])
     if (result.length === 0) return res.status(404).json({ error: true, message: 'No Record Found!' })
     return res.status(200).send({ success: true, data: result })
   } catch (error) {

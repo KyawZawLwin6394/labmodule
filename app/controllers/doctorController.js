@@ -3,7 +3,7 @@ const Doctor = require('../models/doctor');
 
 exports.listAllDoctors = async (req, res) => {
   try {
-    let result = await Doctor.find({isDeleted:false}).populate('supplier');
+    let result = await Doctor.find({isDeleted:false})
     let count = await Doctor.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,

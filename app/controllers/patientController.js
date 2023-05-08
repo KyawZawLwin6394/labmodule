@@ -17,7 +17,7 @@ function formatDateAndTime(dateString) { // format mongodb ISO 8601 date format 
 
 exports.listAllPatients = async (req, res) => {
   try {
-    let result = await Patient.find({isDeleted:false}).populate('img');
+    let result = await Patient.find({isDeleted:false}).populate('img relatedVoucher');
     let count = await Patient.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,
@@ -30,7 +30,7 @@ exports.listAllPatients = async (req, res) => {
 };
 
 exports.getPatient = async (req, res) => {
-  const result = await Patient.find({ _id: req.params.id, isDeleted:false }).populate('img');
+  const result = await Patient.find({ _id: req.params.id, isDeleted:false }).populate('img relatedVoucher');
   if (!result)
     return res.status(500).json({ error: true, message: 'Query Failed!' });
   if (result.length === 0) return res.status(404).send({error:true, message: 'No Record Found!'})
@@ -95,7 +95,7 @@ exports.updatePatient = async (req, res, next) => {
       { _id: req.body.id },
       {$set: data},
       { new: true },
-    ).populate('img');
+    ).populate('img relatedVoucher');
     return res.status(200).send({ success: true, data: result });
   } catch (error) {
     console.log(error)
@@ -132,13 +132,13 @@ exports.activatePatient = async (req, res, next) => {
 
 exports.filterPatients = async (req, res, next) => {
   try {
-    let query = {}
+    let query = {isDeleted:false}
     let { gender, startDate, endDate, status } = req.query
     if (gender) query.gender = gender
     if (status) query.patientStatus = status
     if (startDate && endDate) query.createdAt = { $gte: startDate, $lte: endDate }
     if (Object.keys(query).length === 0) return res.status(404).send({ error: true, message: 'Please Specify A Query To Use This Function' })
-    const result = await Patient.find(query)
+    const result = await Patient.find(query).populate('img relatedVoucher');
     if (result.length === 0) return res.status(404).send({ error: true, message: "No Record Found!" })
     res.status(200).send({ success: true, data: result })
   } catch (err) {
@@ -148,7 +148,7 @@ exports.filterPatients = async (req, res, next) => {
 
 exports.searchPatients = async (req, res, next) => {
   try {
-    const result = await Patient.find({ $text: { $search: req.body.search } })
+    const result = await Patient.find({ $text: { $search: req.body.search } }).populate('img relatedVoucher');
     if (result.length===0) return res.status(404).send({error:true, message:'No Record Found!'})
     return res.status(200).send({ success: true, data: result })
   } catch (err) {

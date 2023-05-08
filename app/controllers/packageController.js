@@ -3,7 +3,7 @@ const Package = require('../models/package');
 
 exports.listAllPackages = async (req, res) => {
   try {
-    let result = await Package.find({isDeleted:false}).populate('supplier');
+    let result = await Package.find({isDeleted:false}).populate('package.item_id');
     let count = await Package.find({isDeleted:false}).count();
     res.status(200).send({
       success: true,
@@ -16,7 +16,7 @@ exports.listAllPackages = async (req, res) => {
 };
 
 exports.getPackage = async (req, res) => {
-  const result = await Package.find({ _id: req.params.id,isDeleted:false }).populate('relatedCategory').populate('referDoctor').populate('package.item_id');
+  const result = await Package.find({ _id: req.params.id,isDeleted:false }).populate('package.item_id')
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result });
@@ -44,7 +44,7 @@ exports.updatePackage = async (req, res, next) => {
       { _id: req.body.id },
       req.body,
       { new: true },
-    ).populate('relatedCategory').populate('referDoctor').populate('package.item_id');
+    ).populate('package.item_id');
     return res.status(200).send({ success: true, data: result });
   } catch (error) {
     return res.status(500).send({ "error": true, "message": error.message })
