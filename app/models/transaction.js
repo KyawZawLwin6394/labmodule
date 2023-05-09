@@ -26,10 +26,6 @@ let TransactionSchema = new Schema({
     enum:['Debit','Credit'],
     // required:true,
   },
-  relatedTreatment: {
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'Treatments',
-  },
   relatedBank: {
     type:mongoose.Schema.Types.ObjectId,
     ref:'AccountingLists',
@@ -51,11 +47,6 @@ let TransactionSchema = new Schema({
     type:Boolean,
     // required:true,
     default:false
-  },
-  relatedMedicineSale: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref:'MedicineSales',
-    default:null
   }
 });
 
