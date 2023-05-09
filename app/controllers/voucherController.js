@@ -178,7 +178,7 @@ exports.activateVoucher = async (req, res, next) => {
 };
 
 exports.getRelatedVouchers = async (req, res) => {
-  const result = await Patient.find({ _id: req.params.patientid, isDeleted: false }).populate([
+  const result = await Voucher.find({ _id: req.params.patientid, isDeleted: false }).populate([
     { path: 'relatedPatient' },
     { path: 'referDoctor' },
     { path: 'testSelection.name' },

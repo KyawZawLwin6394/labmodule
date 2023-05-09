@@ -8,8 +8,8 @@ const config = {
     app: {
       name: 'Lab Module',
     },
-    db:'mongodb+srv://dbuser:P7qBNveg8bVO1d2z@cluster0.85ozwwv.mongodb.net/labModule?retryWrites=true&w=majority',
-    //db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/Central-Clinic?retryWrites=true&w=majority', 
+    //db:'mongodb+srv://dbuser:P7qBNveg8bVO1d2z@cluster0.85ozwwv.mongodb.net/labModule?retryWrites=true&w=majority',
+    db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/Central-Clinic?retryWrites=true&w=majority', 
     uploadsURI:['./uploads/cherry-k/img','./uploads/cherry-k/history'],
     dbName:'labModule',
     maxLoginAttempts: 5,
@@ -24,8 +24,8 @@ const config = {
     app: {
       name: 'Lab Module',
     },
-    db:'mongodb+srv://dbuser:P7qBNveg8bVO1d2z@cluster0.85ozwwv.mongodb.net/labModule?retryWrites=true&w=majority',
-    //db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/Central-Clinic?retryWrites=true&w=majority',
+   // db:'mongodb+srv://dbuser:P7qBNveg8bVO1d2z@cluster0.85ozwwv.mongodb.net/labModule?retryWrites=true&w=majority',
+    db: 'mongodb+srv://projectDev-01:O9YGEyPQvKyA3Q48@kwintechinstances.usgwoxy.mongodb.net/Central-Clinic?retryWrites=true&w=majority',
     uploadsURI:['./uploads/cherry-k/img','./uploads/cherry-k/history'],
     dbName:'labModule',
     maxLoginAttempts: 5,
