@@ -74,13 +74,29 @@ let VoucherSchema = new Schema({
     },
     status:{
         type:String,
-        enum:['Pending','In Progress','Finished']
+        enum:['Pending','In Progress','Finished'],
+        default:'In Progress'
     },
     voucherID: {
         type:String
     },
     seq:{
         type:Number
+    },
+    repayAmount:{
+        type:Number,
+        default:0
+    },
+    creditRemark: {
+        type:String
+    },
+    isPaid: {
+        type:Boolean,
+        default:true
+    },
+    creditAmount:{
+        type:Number,
+        default:0
     }
 });
 
