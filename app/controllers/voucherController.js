@@ -2,6 +2,7 @@
 const Voucher = require('../models/voucher');
 const Patient = require('../models/patient');
 const Commission = require('../models/commission');
+const Transaction = require('../models/transaction');
 
 async function handleCommission(data) {
   const voucherResult = await Voucher.findOne({ _id: data._id, isDeleted: false }).populate([
@@ -110,11 +111,34 @@ exports.createVoucher = async (req, res, next) => {
       { _id: req.body.patientID },
       { $push: { relatedVoucher: result._id } }
     )
+    // Transaction 
+    const fTransResult = await Transaction.create(
+      {
+        "amount": data.payAmount,
+        "date": Date.now(),
+        "remark": req.body.remark,
+        "relatedAccounting": "", //account
+        "type": "Credit"
+      }
+    )
+    const secTransResult = await Transaction.create(
+      {
+        "amount": data.payAmount,
+        "date": Date.now(),
+        "remark": req.body.remark,
+        "relatedBank": req.body.relatedBank,
+        "relatedCash": req.body.relatedCash,
+        "type": "Debit",
+        "relatedTransaction": fTransResult._id
+      }
+    );
     res.status(200).send({
       message: 'Voucher create success',
       success: true,
       data: result,
       patientData: patientResult,
+      fTrans: fTransResult,
+      sTrans: secTransResult,
       commission: commissionSave
     });
   } catch (error) {
@@ -199,10 +223,10 @@ exports.voucherPayment = async (req, res) => {
     const result = await Voucher.updateOne(
       { "_id": req.body.voucherID, },
       { $inc: { creditAmount: -repayAmount }, isPaid: isPaid, updatedAt: repayDate, creditRemark: creditRemark },
-      {new:true}
+      { new: true }
     ).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
-    if (result.length === 0) return res.status(404).send({error:true, message:'No Record Found!'})
-    return res.status(200).send({success:true, data:result})
+    if (result.length === 0) return res.status(404).send({ error: true, message: 'No Record Found!' })
+    return res.status(200).send({ success: true, data: result })
   } catch (error) {
     return res.status(500).send({ "error": true, "message": error.message })
   }
@@ -210,12 +234,13 @@ exports.voucherPayment = async (req, res) => {
 
 exports.getRelatedVouchers = async (req, res) => {
   try {
-    const { relatedPatient, referDoctor, date, status } = req.body;
+    const { relatedPatient, referDoctor, date, status, start, end } = req.body;
     const query = { isDeleted: false };
     if (relatedPatient) query.relatedPatient = relatedPatient;
     if (referDoctor) query.referDoctor = referDoctor;
     if (date) query.date = date;
     if (status) query.status = status;
+    if (start && end) query.date = { $gte: start, $lte: end }
     const result = await Voucher.find(query)
       .populate([
         { path: "relatedPatient" },
