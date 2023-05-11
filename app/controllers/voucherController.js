@@ -101,7 +101,7 @@ exports.createVoucher = async (req, res, next) => {
         "amount": data.payAmount,
         "date": Date.now(),
         "remark": req.body.remark,
-        "relatedAccounting": "", //account
+        "relatedAccounting": req.body.relatedAccounting, //account
         "type": "Credit"
       }
     )
