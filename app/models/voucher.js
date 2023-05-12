@@ -97,6 +97,10 @@ let VoucherSchema = new Schema({
     creditAmount:{
         type:Number,
         default:0
+    },
+    relatedTransaction:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Transactions'
     }
 });
 
