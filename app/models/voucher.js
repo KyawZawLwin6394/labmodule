@@ -99,7 +99,7 @@ let VoucherSchema = new Schema({
         default:0
     },
     relatedTransaction:{
-        type:mongoose.Schema.Types.ObjectId,
+        type:[mongoose.Schema.Types.ObjectId],
         ref:'Transactions'
     }
 });
