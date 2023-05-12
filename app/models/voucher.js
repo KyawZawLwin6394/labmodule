@@ -75,7 +75,7 @@ let VoucherSchema = new Schema({
     status:{
         type:String,
         enum:['Pending','In Progress','Finished'],
-        default:'In Progress'
+        default:'Pending'
     },
     voucherID: {
         type:String
