@@ -98,7 +98,7 @@ exports.createVoucher = async (req, res, next) => {
     // Transaction 
     const fTransResult = await Transaction.create(
       {
-        "amount": data.payAmount,
+        "amount": data.pay,
         "date": Date.now(),
         "remark": req.body.remark,
         "relatedAccounting": req.body.relatedAccounting, //account
@@ -107,7 +107,7 @@ exports.createVoucher = async (req, res, next) => {
     )
     const secTransResult = await Transaction.create(
       {
-        "amount": data.payAmount,
+        "amount": data.pay,
         "date": Date.now(),
         "remark": req.body.remark,
         "relatedBank": req.body.relatedBank,
@@ -119,7 +119,7 @@ exports.createVoucher = async (req, res, next) => {
     data = {
       ...data, relatedTransaction: [fTransResult._id, secTransResult._id]
     }
-
+    console.log(data)
     const newVoucher = new Voucher(data);
     const result = await newVoucher.save();
     // handling commission
