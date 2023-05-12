@@ -112,11 +112,11 @@ exports.trialBalance = async (req,res) => {
   let netAmount = 0;
   try{
     const debit = await Transaction.find({relatedAccounting:id, type:'Debit'})
-    if (debit.length === 0) return res.status(500).send({error:true, message:'Debit Data Not Found!'})
+    // if (debit.length === 0) return res.status(500).send({error:true, message:'Debit Data Not Found!'})
     const totalDebit = debit.reduce((acc, curr) => acc+ Number.parseInt(curr.amount), 0);
 
     const credit = await Transaction.find({relatedAccounting:id, type:'Credit'})
-    if (credit.length === 0) return res.status(500).send({error:true, message:'Credit Data Not Found!'})
+    // if (credit.length === 0) return res.status(500).send({error:true, message:'Credit Data Not Found!'})
     const totalCredit = credit.reduce((acc, curr) => acc+ Number.parseInt(curr.amount), 0);
 
     if (totalDebit === totalDebit) {
@@ -125,8 +125,8 @@ exports.trialBalance = async (req,res) => {
     }
 
     netAmount = totalDebit- totalCredit
-    if (netAmount >= 0) netType = 'Credit'
-    if (netAmount <= 0) netType = 'Debit'
+    if (netAmount > 0) netType = 'Debit'
+    if (netAmount < 0) netType = 'Credit'
     
     return res.status(200).send({success:true, totalDebit:totalDebit, totalCredit:totalCredit, netAmount:netAmount, netType:netType})
   } catch (err) {
