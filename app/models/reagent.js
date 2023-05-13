@@ -19,8 +19,7 @@ let ReagentSchema = new Schema({
         purchasePrice: Number
     }],
     supplier: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Suppliers'
+        type: String
     },
     createdAt: {
         type: Date,
