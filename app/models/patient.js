@@ -14,8 +14,7 @@ let PatientSchema = new Schema({
     type: Number,
   },
   phone: {
-    type:String,
-    required:true
+    type:String
   },
   dateOfBirth: {
     type: Date,
@@ -32,7 +31,6 @@ let PatientSchema = new Schema({
       validator: validator.isEmail,
       message: 'Invalid Email Address.',
     },
-    required: [true, 'User email required'],
   },
   gender: {
     type: String,
