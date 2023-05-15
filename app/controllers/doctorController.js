@@ -15,11 +15,25 @@ exports.listAllDoctors = async (req, res) => {
   }
 };
 
+
+
 exports.getDoctor = async (req, res) => {
   const result = await Doctor.find({ _id: req.params.id,isDeleted:false });
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' });
   return res.status(200).send({ success: true, data: result[0] });
+};
+
+exports.getPathologist = async (req, res) => {
+  try {
+    let result = await Doctor.find({selection: "Pathologist",isDeleted:false})
+    res.status(200).send({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    return res.status(500).send({ error:true, message:'No Record Found!'});
+  }
 };
 
 exports.createDoctor = async (req, res, next) => {
