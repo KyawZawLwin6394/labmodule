@@ -17,4 +17,6 @@ module.exports = (app) => {
 
     app.route('/api/doctors').get(catchError(doctor.listAllDoctors))
 
+    app.route('/api/pathologists').get(catchError(doctor.getPathologist))
+
 };

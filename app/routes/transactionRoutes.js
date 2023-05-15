@@ -12,6 +12,16 @@ module.exports = (app) => {
 
     app.route('/api/transactions/related/:id')
         .get (catchError(transaction.getRelatedTransaction))
+
+        app.route('/api/transactions/relatedExpense/:id')
+        .get (catchError(transaction.getRelatedTransactionExpense))
+
+
+        app.route('/api/transactions/relatedIncome/:id')
+        .get (catchError(transaction.getRelatedTransactionIncome))
+    
+    app.route('/api/transactions/relatedtransactions')
+        .post (catchError(transaction.getRelatedTransactions))
         
     app.route('/api/transaction/:id')
         .get( catchError(transaction.getTransaction))

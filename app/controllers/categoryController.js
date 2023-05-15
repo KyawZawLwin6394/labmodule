@@ -27,12 +27,13 @@ exports.createCategory = async (req, res) => {
   try {
     const newCategory = new Category(req.body);
     const result = await newCategory.save();
-    if (req.body.createAcc === true) {
+    if (req.body.createAcc === "true") {
       let accResult = await AccountingList.create(
         {
           relatedType: "6423b7c40a7d6362acb770a0", //revenues
           relatedHeader: "6423b9b30a7d6362acb770d0", //sales
           subHeader: req.body.name + ' income',
+          name:req.body.name+ ' income',  
           amount: req.body.amount,
           openingBalance: req.body.amount,
           carryForWork: false,
