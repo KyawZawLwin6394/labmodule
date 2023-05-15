@@ -15,7 +15,8 @@ let ReagentSchema = new Schema({
     },
     stockUnit: [{
         unitName: String,
-        stock: Number,
+        stockQty: Number,
+        reorderQty:Number,
         purchasePrice: Number
     }],
     supplier: {
