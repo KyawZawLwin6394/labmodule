@@ -15,6 +15,10 @@ exports.listAllPackages = async (req, res) => {
   }
 };
 
+exports.getPackageCode = async (req,res) => {
+  
+}
+
 exports.getPackage = async (req, res) => {
   const result = await Package.find({ _id: req.params.id,isDeleted:false }).populate('package.item_id')
   if (!result)
