@@ -72,8 +72,10 @@ let ServiceSchema = new Schema({
     subTest: [
         {
             name: String,
+            result: String,
             referenceRange: String,
-            unit: String
+            unit: String,
+            remark: String,
         }
     ]
 });

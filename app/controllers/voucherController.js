@@ -3,6 +3,7 @@ const Voucher = require('../models/voucher');
 const Patient = require('../models/patient');
 const Commission = require('../models/commission');
 const Transaction = require('../models/transaction');
+const Service = require('../models/services');
 
 async function handleCommission(data) {
   const voucherResult = await Voucher.findOne({ _id: data._id, isDeleted: false }).populate([
@@ -24,24 +25,7 @@ function calculateTotalRefer(testSelection) {
   return totalRefer;
 }
 
-async function checkStatus(data) {
-  const [statusResult] = await Voucher.find({ "_id": data.voucherID, isDeleted: false })
-    .populate('relatedPatient')
-    .populate('referDoctor')
-    .populate('testSelection.name');
 
-  if (statusResult.length === 0) return res.status(500).send({ error: true, message: 'No Record Found!' });
-
-  const completedCount = statusResult.testSelection.filter(element => element.result).length;
-  const totalCount = statusResult.testSelection.length;
-  const status = completedCount === totalCount
-    ? 'Finished'
-    : completedCount === 0
-      ? 'Pending'
-      : 'In Progress';
-
-  return status;
-}
 
 
 exports.listAllVouchers = async (req, res) => {
@@ -188,6 +172,55 @@ exports.updateRemarkAndResult = async (req, res, next) => {
     return res.status(500).send({ "error": true, "message": error.message })
   }
 };
+
+exports.updateSubTest = async (req, res, next) => {
+  try {
+    // const result = await Voucher.updateOne(
+    //   { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
+    //   { $set: { "testSelection.$.name.subTest": req.body.subTest} }
+    // ).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+
+    const result = await Service.updateOne(
+      {_id:req.body.testSelectionID},
+      {$set:{subTest:req.body.subTest}}
+    )
+
+    const statusResult = await checkStatus(req.body, res);
+
+    const statusUpdate = await Voucher.findOneAndUpdate(
+      { _id: req.body.voucherID },
+      { $set: { status: statusResult } },
+      { new: true },
+    ).populate('relatedPatient').populate('referDoctor').populate('testSelection.name');
+
+    return res.status(200).send({ success: true, data: statusUpdate });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ "error": true, "message": error.message });
+  }
+};
+
+async function checkStatus(data, res) {
+  const statusResult = await Voucher.find({ "_id": data.voucherID, isDeleted: false })
+    .populate('relatedPatient')
+    .populate('referDoctor')
+    .populate('testSelection.name');
+
+  if (statusResult.length === 0) {
+    throw new Error('No Record Found!');
+  }
+
+  const completedCount = statusResult[0].testSelection.filter(element => element.result).length;
+  const totalCount = statusResult[0].testSelection.length;
+  const status = completedCount === totalCount
+    ? 'Finished'
+    : completedCount === 0
+      ? 'Pending'
+      : 'In Progress';
+
+  return status;
+}
+
 
 exports.deleteVoucher = async (req, res, next) => {
   try {
