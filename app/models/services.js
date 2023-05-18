@@ -51,9 +51,7 @@ let ServiceSchema = new Schema({
         default: false
     },
     referenceRange: [{
-        from: Number,
-        to: Number,
-        gender: String,
+        refRange: String,
         unit: String
     }],
     referAmount: {
