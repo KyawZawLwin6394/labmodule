@@ -19,15 +19,7 @@ let DoctorSchema = new Schema({
     type: String,
   },
   email: {
-    type: String,
-    unique: true,
-    lowercase: true,
-    trim: true,
-    validate: {
-      isAsync: true,
-      validator: validator.isEmail,
-      message: 'Invalid Email Address.',
-    },
+    type: String
   },
   createdAt: {
     type: Date,
