@@ -13,6 +13,7 @@ let DoctorSchema = new Schema({
   },
   name: {
     type: String,
+    required:true
   },
   phone: {
     type: String,
@@ -27,7 +28,6 @@ let DoctorSchema = new Schema({
       validator: validator.isEmail,
       message: 'Invalid Email Address.',
     },
-    required: [true, 'User email required'],
   },
   createdAt: {
     type: Date,
