@@ -40,7 +40,20 @@ let VoucherSchema = new Schema({
         remark:{
             type:String,
             default:null
-        }
+        },
+        subTestFlag :{
+            type:Boolean
+        },
+        subTest: [
+            {
+                name: String,
+                result: String,
+                referenceRange: String,
+                unit: String,
+                remark: String,
+            }
+        ]
+
     }],
     totalCharge: {
         type: Number,
