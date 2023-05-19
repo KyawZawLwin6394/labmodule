@@ -103,9 +103,14 @@ exports.createVoucher = async (req, res, next) => {
     data = {
       ...data, relatedTransaction: [fTransResult._id, secTransResult._id]
     }
-    console.log(data)
     const newVoucher = new Voucher(data);
     const result = await newVoucher.save();
+    const voucherResult = await Voucher.find({_id:result._id}).populate([
+      { path: 'relatedPatient' },
+      { path: 'referDoctor' },
+      { path: 'testSelection.name' },
+    ])
+    console.log(voucherResult)
     // handling commission
     const commissionResult = await handleCommission(result)
     const newCommission = new Commission({
