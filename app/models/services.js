@@ -64,18 +64,21 @@ let ServiceSchema = new Schema({
     specialComment: {
         type: String
     },
-    subTestFlag :{
-        type:Boolean
+    subTestFlag: {
+        type: Boolean
     },
     subTest: [
         {
-            name: String,
-            result: String,
-            referenceRange: String,
-            unit: String,
-            remark: String,
+            name: { type: String },
+            defaultResult: { type: String },
+            result: { type: String },
+            referenceRange: { type: String },
+            unit: { type: String },
+            remark: { type: String },
+            type: { type: String }
         }
     ]
+
 });
 
 module.exports = mongoose.model('Services', ServiceSchema);
