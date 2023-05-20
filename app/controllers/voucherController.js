@@ -180,17 +180,17 @@ exports.updateRemarkAndResult = async (req, res, next) => {
 
 exports.updateSubTest = async (req, res, next) => {
   try {
-    // const result = await Voucher.updateOne(
-    //   { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
-    //   { $set: { "testSelection.$.name.subTest": req.body.subTest} }
-    // ).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
+    const result = await Voucher.updateOne(
+      { "_id": req.body.voucherID, "testSelection._id": req.body.testSelectionID },
+      { $set: { "testSelection.$.subTest": req.body.subTest} }
+    ).populate('relatedPatient').populate('referDoctor').populate('testSelection.name')
 
-    const result = await Service.findOneAndUpdate(
-      {_id:req.body.testSelectionID},
-      {$set:{subTest:req.body.subTest}},
-      {new:true}
-    )
-      console.log(result)
+    // const result = await Service.findOneAndUpdate(
+    //   {_id:req.body.testSelectionID},
+    //   {$set:{subTest:req.body.subTest}},
+    //   {new:true}
+    // )
+     // console.log(result)
     const statusResult = await checkStatus(req.body, res);
 
     const statusUpdate = await Voucher.findOneAndUpdate(

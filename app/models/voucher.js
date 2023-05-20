@@ -45,12 +45,19 @@ let VoucherSchema = new Schema({
             type:Boolean
         },
         subTest: [
+            // {
+            //     name: String,
+            //     result: String,
+            //     //defaultResult: String,
+            //     remark: String,
+            //     //type: String
+            // }
             {
-                name: String,
-                result: String,
-                referenceRange: String,
-                unit: String,
-                remark: String,
+                name: { type: String },
+                defaultResult: { type: String },
+                result: { type: String },
+                remark: { type: String },
+                type: { type: String }
             }
         ]
 
@@ -69,6 +76,10 @@ let VoucherSchema = new Schema({
     },
     change: {
         type: Number,
+    },
+    branch: {
+        type: String,
+        enum: ['AL', 'NOK']
     },
     createdAt: {
         type: Date,
