@@ -55,6 +55,8 @@ let VoucherSchema = new Schema({
             {
                 name: { type: String },
                 defaultResult: { type: String },
+                referenceRange: {type: String},
+                unit: {type: String},
                 result: { type: String },
                 remark: { type: String },
                 type: { type: String }
