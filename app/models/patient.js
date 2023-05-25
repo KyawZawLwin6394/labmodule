@@ -11,7 +11,7 @@ let PatientSchema = new Schema({
     type: String
   },
   age: {
-    type: Number,
+    type: String,
   },
   phone: {
     type:String
