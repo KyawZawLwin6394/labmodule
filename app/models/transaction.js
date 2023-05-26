@@ -8,53 +8,57 @@ const Schema = mongoose.Schema;
 let TransactionSchema = new Schema({
   relatedAccounting: {
     type: mongoose.Schema.Types.ObjectId,
-    ref:'AccountingLists'
+    ref: 'AccountingLists'
   },
   amount: {
     type: String,
     required: true,
   },
   date: {
-    type:Date,
-    required:true
+    type: Date,
+    required: true
   },
   remark: {
     type: String
   },
   type: {
     type: String,
-    enum:['Debit','Credit'],
+    enum: ['Debit', 'Credit'],
     // required:true,
   },
   relatedBank: {
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'AccountingLists',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'AccountingLists',
   },
   relatedCash: {
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'AccountingLists',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'AccountingLists',
   },
-  relatedExpense:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'Expenses'
+  relatedExpense: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Expenses'
   },
-  relatedIncome:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'Income'
+  relatedIncome: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Income'
   },
   treatmentFlag: {
-    type:Boolean, 
+    type: Boolean,
     // required:true
   },
   relatedTransaction: {
     type: mongoose.Schema.Types.ObjectId,
-    ref:'Transactions',
-    default:null
+    ref: 'Transactions',
+    default: null
   },
   isDeleted: {
-    type:Boolean,
+    type: Boolean,
     // required:true,
-    default:false
+    default: false
+  },
+  JEFlag: {
+    type: Boolean,
+    default: false
   }
 });
 

@@ -49,22 +49,24 @@ exports.getJournal = async (req, res) => {
 
 exports.createJournal = async (req, res, next) => {
     console.log('journal')
-    let { remark, relatedCreditAccount, relatedDebitAccount, amount, date } = req.body;
+    let { remark, fromAcc, toAcc, amount, date, fromAccType, toAccType } = req.body;
     try {
         const creditTrans = await Transaction.create({
-            relatedAccounting: relatedCreditAccount,
+            relatedAccounting: fromAcc,
             amount: amount,
             date: date,
             remark: remark,
-            type: 'Credit'
+            type: fromAccType,
+            JEFlag:true
         })
 
         const debitTrans = await Transaction.create({
-            relatedAccounting: relatedDebitAccount,
+            relatedAccounting: toAcc,
             amount: amount,
             date: date,
             remark: remark,
-            type: 'Debit'
+            type: toAccType,
+            JEFlag:true
         })
 
         res.status(200).send({
