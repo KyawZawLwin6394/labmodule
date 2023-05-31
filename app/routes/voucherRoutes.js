@@ -21,6 +21,7 @@ module.exports = (app) => {
     app.route('/api/vouchers/document').put(catchError(voucher.updateRemarkAndResult))
     app.route('/api/vouchers/subtests').put(catchError(voucher.updateSubTest))
     app.route('/api/vouchers/doctor').get(catchError(voucher.getVouchersWithDoctorIDandTime))
+    app.route('/api/vouchers/filter').post(catchError(voucher.filterVoucher))
 
     app.route('/api/vouchers/today')
         .get(catchError(voucher.getTodaysVoucher))
