@@ -1,8 +1,5 @@
 'use strict';
 const FixedAsset = require('../models/fixedAsset');
-const Branch = require('../models/branch');
-const Stock = require('../models/stock');
-
 exports.listAllFixedAssets = async (req, res) => {
   let { keyword, role, limit, skip } = req.query;
   let count = 0;
@@ -50,17 +47,6 @@ exports.createFixedAsset = async (req, res, next) => {
     const newBody = req.body;
     const newFixedAsset = new FixedAsset(newBody);
     const result = await newFixedAsset.save();
-    const getAllBranches = await Branch.find();
-    for (let i = 0; i < getAllBranches.length; i++) {
-      const stockResult = await Stock.create({
-        "relatedProcedureItems": result._id,
-        "currentQty": 0,
-        "fromUnit": 0,
-        "toUnit": 0,
-        "reorderQty": 0,
-        "relatedBranch": getAllBranches[i]._id //branch_id
-      })
-    }
     res.status(200).send({
       message: 'FixedAsset create success',
       success: true,
