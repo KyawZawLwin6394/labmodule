@@ -327,6 +327,13 @@ exports.getTodaysVoucher = async (req, res) => {
   }
 }
 
+exports.filterVoucher = async (req,res) => {
+  let {start,end,type} = req.body;
+  let query = {isDeleted:false}
+  if (start && end) query.date = {$gte:start,$lte:end}
+  const result = await Voucher.find(query)
+}
+
 exports.getVouchersWithDoctorIDandTime = async (req, res) => {
   const { referDoctor, fromDate, toDate } = req.body;
 
