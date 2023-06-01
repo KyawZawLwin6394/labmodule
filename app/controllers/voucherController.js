@@ -92,7 +92,7 @@ exports.createVoucher = async (req, res, next) => {
           }
         )
       }
-      const secTransResult = await Transaction.create(
+      var secTransResult = await Transaction.create(
         {
           "amount": data.pay,
           "date": Date.now(),
