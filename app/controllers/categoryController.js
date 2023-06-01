@@ -40,7 +40,7 @@ exports.createCategory = async (req, res) => {
           generalFlag: false
         }
       )
-      console.log(accResult)
+      req.body = {...req.body, relatedAccounting:accResult._id}
     }
     res.status(200).send({
       message: 'Category create success',

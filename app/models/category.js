@@ -32,6 +32,10 @@ let CategorySchema = new Schema({
     type:String,
     enum:['Service','Reagent'],
     required:true
+  },
+  relatedAccounting : {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'AccountingLists'
   }
 });
 

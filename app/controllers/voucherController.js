@@ -81,30 +81,35 @@ exports.createVoucher = async (req, res, next) => {
   try {
     for (let i = 0; i > data.testSelection.length; i++) {
       const serviceResult = await Service.find({ _id: data.testSelection[i].name }).populate('relatedCategory')
-      const fTransResult = await Transaction.create(
+      if (serviceResult[0].relatedCategory.relatedAccounting) {
+        var fTransResult = await Transaction.create(
+          {
+            "amount": data.pay,
+            "date": Date.now(),
+            "remark": req.body.remark,
+            "relatedAccounting": serviceResult[0].relatedCategory.relatedAccounting, //account
+            "type": "Credit"
+          }
+        )
+      }
+      const secTransResult = await Transaction.create(
         {
           "amount": data.pay,
           "date": Date.now(),
           "remark": req.body.remark,
-          "relatedAccounting": serviceResult[0].relatedCategory.relatedAccounting, //account
-          "type": "Credit"
+          "relatedBank": req.body.relatedBank,
+          "relatedCash": req.body.relatedCash,
+          "type": "Debit"
         }
-      )
+      );
+      if (!data.relatedTransaction) {
+        data.relatedTransaction = []; // Initialize the array if it doesn't exist
+      }
+
+      data.relatedTransaction.push(fTransResult._id, secTransResult._id);
     }
     // Transaction )
-    const secTransResult = await Transaction.create(
-      {
-        "amount": data.pay,
-        "date": Date.now(),
-        "remark": req.body.remark,
-        "relatedBank": req.body.relatedBank,
-        "relatedCash": req.body.relatedCash,
-        "type": "Debit"
-      }
-    );
-    data = {
-      ...data, relatedTransaction: [fTransResult._id, secTransResult._id]
-    }
+
     const newVoucher = new Voucher(data);
     const result = await newVoucher.save();
     const voucherResult = await Voucher.find({ _id: result._id }).populate([
@@ -329,7 +334,7 @@ exports.getTodaysVoucher = async (req, res) => {
 
 exports.filterVoucher = async (req, res) => {
   let totalCharge = 0
-  let totalCredit= 0 
+  let totalCredit = 0
   let totalCashdown = 0
   console.log(totalCharge, totalCredit, totalCashdown)
   let { start, end } = req.body;
@@ -344,8 +349,8 @@ exports.filterVoucher = async (req, res) => {
     totalCharge = e.totalCharge + totalCharge
     totalCredit = e.creditAmount + totalCredit
   })
-  totalCashdown = totalCharge-totalCredit
-  return res.status(200).send({success:true, data:result, totalVoucher:totalCharge, totalCredit:totalCredit * (-1), totalCashdown: totalCashdown})
+  totalCashdown = totalCharge - totalCredit
+  return res.status(200).send({ success: true, data: result, totalVoucher: totalCharge, totalCredit: totalCredit * (-1), totalCashdown: totalCashdown })
 }
 
 exports.getVouchersWithDoctorIDandTime = async (req, res) => {
