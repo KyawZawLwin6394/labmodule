@@ -2,6 +2,8 @@
 const Income = require('../models/income');
 const Transaction = require('../models/transaction')
 const Bank = require('../models/bank');
+//const AccountingList = require('../models/accountingList')
+const AccList = require('../models/accountingList');
 exports.listAllIncomes = async (req, res) => {
   let { keyword, role, limit, skip } = req.query;
   let count = 0;
@@ -106,7 +108,26 @@ exports.createIncome = async (req, res, next) => {
         "relatedCash": newBody.relatedCashAccount
       }
       const secTrans = new Transaction(secondTransaction)
+      
       var secTransResult = await secTrans.save();
+      var debitAcc = newBody.relatedBankAccount ? newBody.relatedBankAccount : newBody.relatedCashAccount
+      const fromAccUpdate = await AccList.findOneAndUpdate(
+        { _id: debitAcc },
+        { $inc: { amount: newBody.finalAmount } },
+        { new: true },
+      );
+      // if(newBody.relatedBank){
+      // // const bank = await Bank.findOneAndUpdate(
+      // //   { _id: newBody.relatedBank },
+      // //   { balance: (balance - newBody.finalAmount) },
+      // //   { new: true },)
+      // const bankAccount = await AccountingList.findOneAndUpdate(
+      //   { _id: newBody.relatedBank },
+      //   { amount: (amount - newBody.finalAmount) },
+      //   { new: true },
+      // )
+      // }
+
     }
     
     console.log(result, fTransResult, secTransResult)

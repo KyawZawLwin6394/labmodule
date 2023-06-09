@@ -12,7 +12,12 @@ let FixedAssetSchema = new Schema({
   description: {
     type: String
   },
-  relatedAccount: {
+  relatedAssetAccount: {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'AccountingLists',
+    required:true
+  },
+  relatedDepreciationAccount: {
     type:mongoose.Schema.Types.ObjectId,
     ref:'AccountingLists',
     required:true

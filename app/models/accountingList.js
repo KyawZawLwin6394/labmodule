@@ -17,6 +17,10 @@ let AccountingListSchema = new Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'AccountHeaders'
     },
+    relatedSubHeader: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'AccountSubHeaders'
+    },
     subHeader: {
         type:String
     },  

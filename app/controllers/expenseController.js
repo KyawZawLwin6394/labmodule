@@ -1,6 +1,7 @@
 'use strict';
 const Expense = require('../models/expense');
 const Transaction = require('../models/transaction');
+const AccList = require('../models/accountingList');
 
 exports.listAllExpenses = async (req, res) => {
     let { keyword, role, limit, skip } = req.query;
@@ -107,6 +108,12 @@ exports.createExpense = async (req, res, next) => {
             const secTrans = new Transaction(secondTransaction)
             var secTransResult = await secTrans.save();
             console.log(secTransResult)
+            var creditAcc = newBody.relatedBankAccount ? newBody.relatedBankAccount : newBody.relatedCashAccount
+            const fromAccUpdate = await AccList.findOneAndUpdate(
+              { _id: creditAcc },
+              { $inc: { amount: -newBody.finalAmount } },
+              { new: true },
+            );
         }
         res.status(200).send({
             message: 'Expense create success',

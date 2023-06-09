@@ -25,14 +25,14 @@ exports.getCategory = async (req, res) => {
 
 exports.createCategory = async (req, res) => {
   try {
-    const newCategory = new Category(req.body);
-    const result = await newCategory.save();
+    
     if (req.body.createAcc === "true") {
       let accResult = await AccountingList.create(
         {
-          relatedType: "6423b7c40a7d6362acb770a0", //revenues
-          relatedHeader: "6423b9b30a7d6362acb770d0", //sales
-          subHeader: req.body.name + ' income',
+          relatedType: "647dffb6ce6e35d5ab22f8d7", //revenues
+          relatedHeader: "647e004dce6e35d5ab22f92d",
+          relatedSubHeader: "647e7c189173775c289410ad", //sales
+         // subHeader: req.body.name + ' income',
           name:req.body.name+ ' income',  
           amount: req.body.amount,
           openingBalance: req.body.amount,
@@ -42,6 +42,8 @@ exports.createCategory = async (req, res) => {
       )
       req.body = {...req.body, relatedAccounting:accResult._id}
     }
+    const newCategory = new Category(req.body);
+    const result = await newCategory.save();
     res.status(200).send({
       message: 'Category create success',
       success: true,
@@ -54,6 +56,23 @@ exports.createCategory = async (req, res) => {
 
 exports.updateCategory = async (req, res, next) => {
   try {
+    
+    if (req.body.createAcc === "true") {
+      let accResult = await AccountingList.create(
+        {
+          relatedType: "647dffb6ce6e35d5ab22f8d7", //revenues
+          relatedHeader: "647e004dce6e35d5ab22f92d",
+          relatedSubHeader: "647e7c189173775c289410ad", //sales
+         // subHeader: req.body.name + ' income',
+          name:req.body.name+ ' income',  
+          amount: req.body.amount,
+          openingBalance: req.body.amount,
+          carryForWork: false,
+          generalFlag: false
+        }
+      )
+      req.body = {...req.body, relatedAccounting:accResult._id}
+    }
     const result = await Category.findOneAndUpdate(
       { _id: req.body.id },
       req.body,

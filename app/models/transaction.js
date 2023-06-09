@@ -40,7 +40,7 @@ let TransactionSchema = new Schema({
   },
   relatedIncome: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Income'
+    ref: 'Incomes'
   },
   treatmentFlag: {
     type: Boolean,

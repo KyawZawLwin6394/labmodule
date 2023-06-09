@@ -1,5 +1,6 @@
 'use strict';
 const FixedAsset = require('../models/fixedAsset');
+const AccList = require('../models/accountingList');
 exports.listAllFixedAssets = async (req, res) => {
   let { keyword, role, limit, skip } = req.query;
   let count = 0;
@@ -47,6 +48,21 @@ exports.createFixedAsset = async (req, res, next) => {
     const newBody = req.body;
     const newFixedAsset = new FixedAsset(newBody);
     const result = await newFixedAsset.save();
+    
+    const AssetUpdate = await AccList.findOneAndUpdate(
+      { _id: req.body.relatedAssetAccount },
+      { $inc: { amount: parseInt(req.body.initialPrice) } },
+      { new: true },
+    );
+
+    if(req.body.existingAsset === "1"){
+      const AssetUpdate = await AccList.findOneAndUpdate(
+        { _id: req.body.relatedDepreciationAccount },
+        { $inc: { amount: parseInt(req.body.depreciationTotal) } },
+        { new: true },
+      );
+    }
+
     res.status(200).send({
       message: 'FixedAsset create success',
       success: true,

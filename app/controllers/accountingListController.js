@@ -17,7 +17,7 @@ exports.listAllAccountingLists = async (req, res) => {
     regexKeyword ? (query['name'] = regexKeyword) : ''
     let result = await AccountingList.find(query)
       .skip(skip)
-      .populate('relatedType relatedHeader relatedBank')
+      .populate('relatedType relatedHeader relatedSubHeader relatedBank')
     console.log(result)
     count = await AccountingList.find(query).count()
     const division = count / limit
@@ -43,7 +43,7 @@ exports.getAccountingList = async (req, res) => {
   const result = await AccountingList.find({
     _id: req.params.id,
     isDeleted: false
-  }).populate('relatedType relatedHeader relatedBank')
+  }).populate('relatedType relatedHeader relatedSubHeader relatedBank')
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' })
   return res.status(200).send({ success: true, data: result })
@@ -53,7 +53,7 @@ exports.getRelatedAccount = async (req, res) => {
   const result = await AccountingList.find({
     relatedHeader: req.params.id,
     isDeleted: false
-  }).populate('relatedHeader')
+  }).populate('relatedType relatedHeader relatedSubHeader')
   if (!result)
     return res.status(500).json({ error: true, message: 'No Record Found' })
   return res.status(200).send({ success: true, data: result })
