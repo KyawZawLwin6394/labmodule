@@ -11,26 +11,31 @@ let CommissionSchema = new Schema({
     },
     relatedDoctor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:'Doctors',
+        ref: 'Doctors',
     },
     relatedVoucher: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:'Vouchers',
-        required:true
+        ref: 'Vouchers',
+        required: true
     },
-    totalCommission:{
-        type:Number,
-        required:true
+    totalCommission: {
+        type: Number,
+        required: true
     },
-    relatedPatient:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Patients',
-        required:true
+    relatedPatient: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Patients',
+        required: true
     },
-    isDeleted:{
-        type:Boolean,
-        required:true,
-        default:false
+    isDeleted: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    status: {
+        type: String,
+        enum: ['Claimed', 'Unclaimed'],
+        default: 'Unclaimed'
     }
 });
 
