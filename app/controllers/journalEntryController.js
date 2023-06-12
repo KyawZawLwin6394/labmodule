@@ -1,6 +1,7 @@
 // relatedCreditAccount:id (credit)
 // relatedDebitAccount:id (debit)'use strict';
 const Transaction = require('../models/transaction')
+const AccList = require('../models/accountingList');
 exports.getAllJournals = async (req, res) => {
     let { keyword, role, limit, skip } = req.query;
     let count = 0;
@@ -60,6 +61,20 @@ exports.createJournal = async (req, res, next) => {
             JEFlag:true
         })
 
+        if(fromAccType === "Debit"){
+            const fromAccUpdate = await AccList.findOneAndUpdate(
+                { _id: fromAcc },
+                { $inc: { amount: amount } },
+                { new: true },
+              );
+        }else if(fromAccType === "Credit"){
+            const fromAccUpdate = await AccList.findOneAndUpdate(
+                { _id: fromAcc },
+                { $inc: { amount: -amount } },
+                { new: true },
+              );
+        }
+
         const debitTrans = await Transaction.create({
             relatedAccounting: toAcc,
             amount: amount,
@@ -68,6 +83,20 @@ exports.createJournal = async (req, res, next) => {
             type: toAccType,
             JEFlag:true
         })
+
+        if(toAccType === "Debit"){
+            const fromAccUpdate = await AccList.findOneAndUpdate(
+                { _id: toAcc },
+                { $inc: { amount: amount } },
+                { new: true },
+              );
+        }else if(toAccType === "Credit"){
+            const fromAccUpdate = await AccList.findOneAndUpdate(
+                { _id: toAcc },
+                { $inc: { amount: -amount } },
+                { new: true },
+              );
+        }
 
         res.status(200).send({
             message: 'Journal create success',
