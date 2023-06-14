@@ -4,6 +4,8 @@ const Patient = require('../models/patient');
 const Commission = require('../models/commission');
 const Transaction = require('../models/transaction');
 const Service = require('../models/services');
+const AccList = require('../models/accountingList');
+
 
 async function handleCommission(data) {
   const voucherResult = await Voucher.findOne({ _id: data._id, isDeleted: false }).populate([
@@ -96,6 +98,11 @@ exports.createVoucher = async (req, res, next) => {
           }
         )
         data.relatedTransaction.push(fTransResult._id);
+        const fromAccUpdate = await AccList.findOneAndUpdate(
+          { _id: serviceResult[0].relatedCategory.relatedAccounting },
+          { $inc: { amount: data.testSelection[i].unitCharge } },
+          { new: true },
+        );
       }
       
     }
@@ -111,6 +118,11 @@ exports.createVoucher = async (req, res, next) => {
       }
     );
     data.relatedTransaction.push(secTransResult._id);
+    const toAccUpdate = await AccList.findOneAndUpdate(
+      { _id: req.body.relatedBank ? req.body.relatedBank : req.body.relatedCash },
+      { $inc: { amount: data.pay } },
+      { new: true },
+    );
     // Transaction )
 
     const newVoucher = new Voucher(data);

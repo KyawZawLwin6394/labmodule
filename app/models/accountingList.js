@@ -51,6 +51,10 @@ let AccountingListSchema = new Schema({
     relatedBank: {
         type:mongoose.Schema.Types.ObjectId,
         ref:'Banks'
+    },
+    accountNature: {
+        type: String,
+        default: "Debit"
     }
 });
 

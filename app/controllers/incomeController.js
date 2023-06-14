@@ -73,6 +73,11 @@ exports.createIncome = async (req, res, next) => {
     }
     const newTrans = new Transaction(firstTransaction)
     const fTransResult = await newTrans.save();
+    const accUpdate = await AccList.findOneAndUpdate(
+      { _id: newBody.relatedAccounting },
+      { $inc: { amount: newBody.finalAmount } },
+      { new: true },
+    );
     if (req.body.relatedCredit) {
       //credit
       const secondTransaction = {

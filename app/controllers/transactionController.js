@@ -77,7 +77,23 @@ exports.createTransaction = async (req, res, next) => {
   try {
     const newBody = req.body;
     const newTransaction = new Transaction(newBody);
-    const result = await newTransaction.save();
+    const result = (await newTransaction.save()).populate("relatedAccounting");
+    
+    if(result.relatedAccounting.accountNature){
+    if(req.body.type === result.relatedAccounting.accountNature){
+      const accUpdate = await AccountingList.findOneAndUpdate(
+        { _id: result.relatedAccounting._id },
+        { $inc: { amount: result.amount } },
+        { new: true },
+      );
+    }else{
+      const accUpdate = await AccountingList.findOneAndUpdate(
+        { _id: result.relatedAccounting._id },
+        { $inc: { amount: -result.amount } },
+        { new: true },
+      );
+    }
+  }
     res.status(200).send({
       message: 'Transaction create success',
       success: true,
