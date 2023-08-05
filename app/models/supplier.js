@@ -8,27 +8,29 @@ const validator = require('validator');
 
 let SupplierSchema = new Schema({
   name: {
+    type: String,
+  },
+  email: {
     type: String
   },
-  phone:{
+  phone: {
     type: String,
     unique: true,
-    required: [true, 'Phone Number Required!'],
   },
   address: {
-    type:String,
-    required:true
+    type: String,
   },
   creditAmount: {
     type: Number,
-    default:0
+    default: 0
   },
   purchaseAmount: {
     type: Number,
-    default:0,
+    default: 0,
   },
-  status:{
-    type:Boolean
+  status: {
+    type: Boolean,
+    default: false
   },
   createdAt: {
     type: Date,
@@ -38,9 +40,9 @@ let SupplierSchema = new Schema({
     type: Date
   },
   isDeleted: {
-    type:Boolean,
-    required:true,
-    default:false
+    type: Boolean,
+    required: true,
+    default: false
   }
 });
 
