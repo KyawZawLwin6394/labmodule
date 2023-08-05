@@ -36,6 +36,7 @@ let ServiceSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Reagents'
         },
+        qty: Number,
         amount: Number
     }],
     createdAt: {
@@ -77,7 +78,11 @@ let ServiceSchema = new Schema({
             remark: { type: String },
             type: { type: String }
         }
-    ]
+    ],
+    usageStatus: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Usages'
+    }
 
 });
 

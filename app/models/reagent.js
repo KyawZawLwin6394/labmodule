@@ -24,7 +24,7 @@ let ReagentSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now,
+        default: Date.now, 
     },
     updatedAt: {
         type: Date
@@ -33,6 +33,9 @@ let ReagentSchema = new Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    qty:{
+        type:Number
     }
 });
 
