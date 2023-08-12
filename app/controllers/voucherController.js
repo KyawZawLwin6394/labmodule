@@ -84,46 +84,44 @@ exports.createVoucher = async (req, res, next) => {
     data.relatedTransaction = []; // Initialize the array if it doesn't exist
   }
   try {
-    for (let i = 0; i < data.testSelection.length; i++) {
-      const serviceResult = await Service.find({ _id: data.testSelection[i].name }).populate('relatedCategory')
-      if (serviceResult[0].relatedCategory.relatedAccounting) {
-        console.log(serviceResult[0].relatedCategory.relatedAccounting)
-        var fTransResult = await Transaction.create(
-          {
-            "amount": data.testSelection[i].unitCharge,
-            "date": Date.now(),
-            "remark": "Lab Test Sales",
-            "relatedAccounting": serviceResult[0].relatedCategory.relatedAccounting, //account
-            "type": "Credit"
-          }
-        )
-        data.relatedTransaction.push(fTransResult._id);
-        const fromAccUpdate = await AccList.findOneAndUpdate(
-          { _id: serviceResult[0].relatedCategory.relatedAccounting },
-          { $inc: { amount: data.testSelection[i].unitCharge } },
-          { new: true },
-        );
-      }
-      
-    }
-    var secTransResult = await Transaction.create(
-      {
-        "amount": data.pay,
-        "date": Date.now(),
-        "remark": "Lab Test Sales",
-        "relatedAccounting": req.body.relatedBank ? req.body.relatedBank : req.body.relatedCash,
-        "relatedBank": req.body.relatedBank,
-        "relatedCash": req.body.relatedCash,
-        "type": "Debit"
-      }
-    );
-    data.relatedTransaction.push(secTransResult._id);
-    const toAccUpdate = await AccList.findOneAndUpdate(
-      { _id: req.body.relatedBank ? req.body.relatedBank : req.body.relatedCash },
-      { $inc: { amount: data.pay } },
-      { new: true },
-    );
-    // Transaction )
+    // for (let i = 0; i < data.testSelection.length; i++) {
+    //   const serviceResult = await Service.find({ _id: data.testSelection[i].name }).populate('relatedCategory')
+    //   if (serviceResult[0].relatedCategory.relatedAccounting) {
+    //     var fTransResult = await Transaction.create(
+    //       {
+    //         "amount": data.testSelection[i].unitCharge,
+    //         "date": Date.now(),
+    //         "remark": "Lab Test Sales",
+    //         "relatedAccounting": serviceResult[0].relatedCategory.relatedAccounting, //account
+    //         "type": "Credit"
+    //       }
+    //     )
+    //     data.relatedTransaction.push(fTransResult._id);
+    //     const fromAccUpdate = await AccList.findOneAndUpdate(
+    //       { _id: serviceResult[0].relatedCategory.relatedAccounting },
+    //       { $inc: { amount: data.testSelection[i].unitCharge } },
+    //       { new: true },
+    //     );
+    //   }
+
+    // }
+    // var secTransResult = await Transaction.create(
+    //   {
+    //     "amount": data.pay,
+    //     "date": Date.now(),
+    //     "remark": "Lab Test Sales",
+    //     "relatedAccounting": req.body.relatedBank ? req.body.relatedBank : req.body.relatedCash,
+    //     "relatedBank": req.body.relatedBank,
+    //     "relatedCash": req.body.relatedCash,
+    //     "type": "Debit"
+    //   }
+    // );
+    // data.relatedTransaction.push(secTransResult._id);
+    // const toAccUpdate = await AccList.findOneAndUpdate(
+    //   { _id: req.body.relatedBank ? req.body.relatedBank : req.body.relatedCash },
+    //   { $inc: { amount: data.pay } },
+    //   { new: true },
+    // );
 
     const newVoucher = new Voucher(data);
     const result = await newVoucher.save();
@@ -132,7 +130,6 @@ exports.createVoucher = async (req, res, next) => {
       { path: 'referDoctor' },
       { path: 'testSelection.name' },
     ])
-    console.log(voucherResult)
     // handling commission
     const commissionResult = await handleCommission(result)
     const newCommission = new Commission({
@@ -147,13 +144,11 @@ exports.createVoucher = async (req, res, next) => {
       { _id: req.body.patientID },
       { $push: { relatedVoucher: result._id } }
     )
-
     res.status(200).send({
       message: 'Voucher create success',
       success: true,
-      data: result,
+      data: voucherResult,
       patientData: patientResult,
-      sTrans: secTransResult,
       commission: commissionSave
     });
 
