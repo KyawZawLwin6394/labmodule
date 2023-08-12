@@ -130,6 +130,7 @@ exports.createVoucher = async (req, res, next) => {
       { path: 'referDoctor' },
       { path: 'testSelection.name' },
     ])
+    console.log(voucherResult)
     // handling commission
     const commissionResult = await handleCommission(result)
     const newCommission = new Commission({
@@ -144,10 +145,11 @@ exports.createVoucher = async (req, res, next) => {
       { _id: req.body.patientID },
       { $push: { relatedVoucher: result._id } }
     )
+
     res.status(200).send({
       message: 'Voucher create success',
       success: true,
-      data: voucherResult,
+      data: result,
       patientData: patientResult,
       commission: commissionSave
     });
